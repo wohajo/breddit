@@ -4,6 +4,7 @@ const cors = require("cors");
 const http = require("http").Server(app);
 const fs = require("fs");
 const auth = require("./routes/auth");
+const posts = require("./routes/posts");
 const passport = require("./passport-config");
 // socket io
 
@@ -19,7 +20,11 @@ io.sockets.on("connection", (socket) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// routes
+
 app.use("/auth", auth);
+app.use("/posts", posts);
 
 // initialization
 
