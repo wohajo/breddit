@@ -23,8 +23,7 @@ router.post("/login", function (req, res, next) {
       if (err) {
         res.send(err);
       }
-
-      const token = jwt.sign(user, "your_jwt_secret", { expiresIn: "2d" });
+      const token = jwt.sign(user, process.env.SECRET, { expiresIn: "2d" });
       return res.json({ user, token });
     });
   })(req, res, next);
@@ -32,19 +31,19 @@ router.post("/login", function (req, res, next) {
 
 router.post("/register", async (req, res) => {
   let error = null;
-  const result = await pool.query("SELECT * FROM users");
+  const result = await pool.query("SELECT * FROM reddit_user");
 
   result.rows.forEach((user) => {
-    if (req.body.username === user.username) {
-      error = { message: "User with this username already exists" };
+    if (req.body.username === user.username || req.body.email === user.email) {
+      error = { message: "User with this username or email already exists" };
     }
   });
 
   if (!error) {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const result = await pool.query(
-      "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING Id",
-      [req.body.username, hashedPassword]
+      "INSERT INTO reddit_user (nickname, activation_guid, activation_expire_date, password, email) VALUES ($1, NULL, NULL, $2, $3) RETURNING Id",
+      [req.body.username, hashedPassword, req.body.email]
     );
     id = result.rows[0]["id"];
     res.json({ id: id });
