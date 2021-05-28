@@ -8,12 +8,17 @@ const bcrypt = require("bcrypt");
 router.post("/login", function (req, res, next) {
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err || !user) {
-      console.log(info);
-      return res.status(400).json({
-        message: info.message,
-        user: user,
-      });
+      if (info.status === 401) {
+        return res.status(401).json({
+          message: info.message,
+        });
+      } else {
+        return res.status(500).json({
+          message: info.message,
+        });
+      }
     }
+
     req.login(user, { session: false }, (err) => {
       if (err) {
         res.send(err);

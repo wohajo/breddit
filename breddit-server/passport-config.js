@@ -15,9 +15,10 @@ const authenticateUser = async (username, password, done) => {
     return done(null, false, { message: "Wrong credentials", status: 401 });
 
   try {
-    if (await bcrypt.compare(password, user.password))
-      return done(null, { id: user.id, username: user.username, status: 200 });
-    else
+    if (await bcrypt.compare(password, user.password)) {
+      delete user.password;
+      return done(null, user);
+    } else
       return done(null, false, { message: "Wrong credentials", status: 401 });
   } catch (e) {
     return done(e);
