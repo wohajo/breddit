@@ -44,11 +44,11 @@ client.connect().then(() => {
   console.log("Connected to PostgreSQL database");
   const port = process.env.APP_PORT || 5000;
 
-  const createTables = fs.readFileSync("./db.sql").toString();
-  client.query(createTables);
+  // const createTables = fs.readFileSync("./db.sql").toString();
+  // client.query(createTables);
 
-  const insertToTables = fs.readFileSync("./insert.sql").toString();
-  client.query(insertToTables);
+  // const insertToTables = fs.readFileSync("./insert.sql").toString();
+  // client.query(insertToTables);
 
   http.listen(port, () => {
     console.log(`API server listening at http://localhost:${port}`);

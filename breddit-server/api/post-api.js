@@ -1,7 +1,8 @@
 const { pool } = require("../db-config");
+const { getPostQuery } = require("../utils/query-utils");
 
 const getPosts = async () => {
-  const res = await pool.query("SELECT * from post");
+  const res = await pool.query(getPostQuery());
   return res.rows;
 };
 
