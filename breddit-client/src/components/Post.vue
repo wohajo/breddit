@@ -9,6 +9,19 @@
       <p class="card-text">
         <small class="text-muted">{{ formattedDate }}</small>
       </p>
+      <button type="button" class="btn btn-sm btn-outline-success">
+        <i class="bi bi-chevron-up"></i>
+      </button>
+      {{ post.votes }}
+      <button type="button" class="btn btn-sm btn-outline-danger">
+        <i class="bi bi-chevron-down"></i>
+      </button>
+      <button
+        type="button"
+        class="btn btn-comments btn-sm btn-outline-secondary"
+      >
+        <i class="bi bi-chat-text"></i>
+      </button>
     </div>
     <img v-if="post.image_path !== null" v-bind:src="post.image_path" />
     <!-- <iframe
@@ -59,5 +72,15 @@ export default {
 <style lang="scss">
 .card {
   margin-bottom: 1vh;
+}
+
+.card-body {
+  button {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .btn-comments {
+    float: right;
+  }
 }
 </style>

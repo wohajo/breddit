@@ -1,9 +1,9 @@
 <template>
   <div>
     <Navbar />
-    <div class="container">
+    <div class="container-sm">
       <div class="row justify-content-md-center">
-        <div class="col-md-auto">
+        <div class="col-md-6">
           <router-view />
         </div>
       </div>
@@ -17,6 +17,9 @@ export default {
   name: "App",
   components: {
     Navbar,
+  },
+  methods: {
+    activateModal() {},
   },
 };
 </script>

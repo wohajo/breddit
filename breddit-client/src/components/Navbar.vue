@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-sm sticky-top navbar-dark bg-dark">
     <div class="container-fluid">
       <router-link class="navbar-brand" to="/">Breddit</router-link>
       <button
@@ -14,15 +14,10 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <router-link class="nav-link active" aria-current="page" to="/"
               >Home</router-link
-            >
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link active" aria-current="page" to="/about"
-              >About</router-link
             >
           </li>
         </ul>
@@ -35,6 +30,32 @@
           />
           <button class="btn btn-outline-primary" type="submit">Search</button>
         </form>
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="accountMenu"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Account
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="accountMenu">
+              <li>
+                <router-link class="dropdown-item" to="/login"
+                  >Log in</router-link
+                >
+              </li>
+              <li>
+                <router-link class="dropdown-item" to="/register"
+                  >Register</router-link
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>

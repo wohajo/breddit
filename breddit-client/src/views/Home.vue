@@ -1,5 +1,15 @@
 <template>
   <div class="home">
+    <div class="d-grid gap-2">
+      <button
+        class="btn btn-outline-dark"
+        type="button"
+        @click="$router.push('/submit')"
+      >
+        <i class="bi bi-plus-circle"></i>
+        Add new post
+      </button>
+    </div>
     <Post v-for="post in posts" :key="post.id" :post="post" />
   </div>
 </template>
@@ -30,3 +40,13 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.d-grid {
+  margin-bottom: 1vh;
+}
+
+.bi {
+  float: left;
+}
+</style>
