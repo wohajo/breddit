@@ -6,11 +6,11 @@
         <input
           type="text"
           class="form-control"
-          id="titleInput"
-          placeholder="Title"
+          id="subredditInput"
+          placeholder="Subreddit"
           required
         />
-        <label for="titleInput">Title</label>
+        <label for="subredditInput">Subreddit</label>
       </div>
       <div class="form-floating mb-3">
         <input
@@ -30,6 +30,7 @@
           rows="3"
         ></textarea>
       </div>
+      <label>Images or videos (Optional)</label>
       <div class="form-floating mb-3">
         <input
           type="text"
