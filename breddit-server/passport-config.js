@@ -30,7 +30,7 @@ const authenticateUser = async (username, password, done) => {
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "username",
+      usernameField: "nickname",
       passwordField: "password",
     },
     authenticateUser
