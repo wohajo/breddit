@@ -6,7 +6,7 @@
         type="button"
         @click="$router.push('/submit')"
       >
-        <i class="bi bi-plus-circle"></i>
+        <BIconPlusCircle />
         Add new post
       </button>
     </div>
@@ -17,6 +17,7 @@
 <script>
 import Post from "@/components/Post";
 import axios from "axios";
+import { BIconPlusCircle } from "bootstrap-icons-vue";
 
 export default {
   name: "Home",
@@ -27,6 +28,7 @@ export default {
   },
   components: {
     Post,
+    BIconPlusCircle,
   },
   methods: {
     async getPosts() {
@@ -44,9 +46,5 @@ export default {
 <style lang="scss">
 .d-grid {
   margin-bottom: 1vh;
-}
-
-.bi {
-  float: left;
 }
 </style>

@@ -13,6 +13,8 @@
 
 <script>
 import Navbar from "@/components/Navbar";
+import "@popperjs/core";
+import "bootstrap";
 export default {
   name: "App",
   components: {
@@ -24,4 +26,7 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+@use "@/styles/_variables.scss" as *;
+@import "./node_modules/bootstrap/scss/bootstrap";
+</style>

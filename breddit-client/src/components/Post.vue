@@ -10,17 +10,17 @@
         <small class="text-muted">{{ formattedDate }}</small>
       </p>
       <button type="button" class="btn btn-sm btn-outline-success">
-        <i class="bi bi-chevron-up"></i>
+        <BIconChevronUp />
       </button>
       {{ post.votes }}
       <button type="button" class="btn btn-sm btn-outline-danger">
-        <i class="bi bi-chevron-down"></i>
+        <BIconChevronDown />
       </button>
       <button
         type="button"
         class="btn btn-comments btn-sm btn-outline-secondary"
       >
-        <i class="bi bi-chat-text"></i>
+        <BIconChatText />
       </button>
     </div>
     <img v-if="post.image_path !== null" v-bind:src="post.image_path" />
@@ -36,6 +36,12 @@
 </template>
 
 <script>
+import {
+  BIconChevronDown,
+  BIconChevronUp,
+  BIconChatText,
+} from "bootstrap-icons-vue";
+
 export default {
   name: "Post",
   props: {
@@ -52,6 +58,11 @@ export default {
       subreddit_name: String,
       votes: Number,
     },
+  },
+  components: {
+    BIconChevronUp,
+    BIconChevronDown,
+    BIconChatText,
   },
   data() {
     return {
