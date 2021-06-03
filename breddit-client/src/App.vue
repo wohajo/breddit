@@ -1,25 +1,14 @@
 <template>
   <div>
-    <Navbar />
-    <div class="container-sm">
-      <div class="row justify-content-md-center">
-        <div class="col-md-6">
-          <router-view />
-        </div>
-      </div>
-    </div>
+    <router-view />
   </div>
 </template>
 
 <script>
-import Navbar from "@/components/Navbar";
 import "@popperjs/core";
 import "bootstrap";
 export default {
   name: "App",
-  components: {
-    Navbar,
-  },
   methods: {
     activateModal() {},
   },

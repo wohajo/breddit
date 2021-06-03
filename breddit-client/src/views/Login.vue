@@ -1,31 +1,42 @@
 <template>
-  <div class="login">
-    <h1>Log in</h1>
-    <form @submit="login">
-      <div class="form-floating mb-3">
-        <input
-          type="text"
-          class="form-control"
-          id="nickameInput"
-          placeholder="Nickname"
-          v-model="nicknameInput"
-          required
-        />
-        <label for="nickameInput">Nickname</label>
+  <div>
+    <Navbar />
+    <div class="container-sm">
+      <div class="row justify-content-md-center">
+        <div class="col-md-6">
+          <div class="login">
+            <h1>Log in</h1>
+            <form @submit="login">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nickameInput"
+                  placeholder="Nickname"
+                  v-model="nicknameInput"
+                  required
+                />
+                <label for="nickameInput">Nickname</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="password"
+                  class="form-control"
+                  id="passwordInput"
+                  placeholder="Password"
+                  v-model="passwordInput"
+                  required
+                />
+                <label for="passwordInput">Password</label>
+              </div>
+              <button type="submit" class="btn btn-outline-success">
+                Log in
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
-      <div class="form-floating mb-3">
-        <input
-          type="password"
-          class="form-control"
-          id="passwordInput"
-          placeholder="Password"
-          v-model="passwordInput"
-          required
-        />
-        <label for="passwordInput">Password</label>
-      </div>
-      <button type="submit" class="btn btn-outline-success">Log in</button>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -36,8 +47,10 @@ import {
   setInLocalStorage,
 } from "../utlis/storage-utils";
 import { checkIfTokenExpired } from "../utlis/jwt-utils";
+import Navbar from "../components/Navbar.vue";
 
 export default {
+  components: { Navbar },
   name: "Login",
   data() {
     return {
