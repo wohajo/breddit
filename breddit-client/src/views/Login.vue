@@ -46,7 +46,7 @@ import {
   setObjectInLocalStorage,
   setInLocalStorage,
 } from "../utlis/storage-utils";
-import { checkIfTokenExpired } from "../utlis/jwt-utils";
+import { checkIfTokenExpired, logOut } from "../utlis/jwt-utils";
 import Navbar from "../components/Navbar.vue";
 
 export default {
@@ -60,6 +60,7 @@ export default {
   },
   mounted() {
     if (!checkIfTokenExpired()) this.$router.push("/");
+    else logOut();
   },
   methods: {
     login(event) {

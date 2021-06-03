@@ -5,7 +5,7 @@
       <div class="row justify-content-md-center">
         <div class="col-md-6">
           <div class="home">
-            <div v-if="!checkIfTokenExpired()" class="d-grid gap-2">
+            <div v-if="this.checkIfLoggedIn()" class="d-grid gap-2">
               <button
                 class="btn btn-outline-dark"
                 type="button"
@@ -27,7 +27,7 @@
 import Post from "@/components/Post";
 import axios from "axios";
 import { BIconPlusCircle } from "bootstrap-icons-vue";
-import { checkIfTokenExpired } from "../utlis/jwt-utils";
+import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import Navbar from "../components/Navbar.vue";
 
 export default {
@@ -48,8 +48,8 @@ export default {
         .get(`${process.env.VUE_APP_SERVER}/posts`)
         .then((res) => (this.posts = res.data));
     },
-    checkIfTokenExpired() {
-      return checkIfTokenExpired();
+    checkIfLoggedIn() {
+      return checkIfLoggedIn();
     },
   },
   mounted() {

@@ -72,13 +72,14 @@
 
 <script>
 import Navbar from "../components/Navbar.vue";
-import { checkIfTokenExpired } from "../utlis/jwt-utils";
+import { checkIfTokenExpired, logOut } from "../utlis/jwt-utils";
 
 export default {
   name: "Register",
   components: { Navbar },
   mounted() {
     if (!checkIfTokenExpired()) this.$router.push("/");
+    else logOut();
   },
 };
 </script>

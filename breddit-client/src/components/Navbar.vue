@@ -40,7 +40,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Account
+              {{ this.getUsername() }}
             </a>
             <ul class="dropdown-menu" aria-labelledby="accountMenu">
               <li>
@@ -78,6 +78,10 @@
 
 <script>
 import { checkIfTokenExpired, logOut } from "../utlis/jwt-utils";
+import {
+  getObjectFromLocalStorage,
+  isInLocalStorage,
+} from "../utlis/storage-utils";
 
 export default {
   name: "Navbar",
@@ -85,9 +89,14 @@ export default {
     checkIfTokenExpired() {
       return checkIfTokenExpired();
     },
+    getUsername() {
+      if (!isInLocalStorage("user")) return "Account";
+      else return getObjectFromLocalStorage("user").nickname;
+    },
     logOut() {
       logOut();
       this.$forceUpdate();
+      this.$router.push("/");
     },
   },
 };

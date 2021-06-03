@@ -68,10 +68,14 @@
 </template>
 <script>
 import Navbar from "../components/Navbar.vue";
+import { checkIfLoggedIn } from "../utlis/jwt-utils";
 export default {
   name: "SubmitPost",
   components: {
     Navbar,
+  },
+  mounted() {
+    if (!checkIfLoggedIn()) this.$router.push("/");
   },
 };
 </script>

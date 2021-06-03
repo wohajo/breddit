@@ -14,6 +14,11 @@ export const checkIfTokenExpired = () => {
   return Date.now() >= exp * 1000 ? true : false;
 };
 
+export const checkIfLoggedIn = () => {
+  if (isInLocalStorage("user") && !checkIfTokenExpired()) return true;
+  else return false;
+};
+
 export const logOut = () => {
   removeFromLocalStorage("token");
   removeFromLocalStorage("user");
