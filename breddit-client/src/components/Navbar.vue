@@ -44,12 +44,26 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="accountMenu">
               <li>
-                <router-link class="dropdown-item" to="/login"
+                <router-link
+                  v-if="!this.checkIfTokenExpired()"
+                  class="dropdown-item"
+                  to="/login"
+                  >Log out</router-link
+                >
+              </li>
+              <li>
+                <router-link
+                  v-if="this.checkIfTokenExpired()"
+                  class="dropdown-item"
+                  to="/login"
                   >Log in</router-link
                 >
               </li>
               <li>
-                <router-link class="dropdown-item" to="/register"
+                <router-link
+                  v-if="this.checkIfTokenExpired()"
+                  class="dropdown-item"
+                  to="/register"
                   >Register</router-link
                 >
               </li>
@@ -62,8 +76,15 @@
 </template>
 
 <script>
+import { checkIfTokenExpired } from "../utlis/jwt-utils";
+
 export default {
   name: "Navbar",
+  methods: {
+    checkIfTokenExpired() {
+      return checkIfTokenExpired();
+    },
+  },
 };
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="d-grid gap-2">
+    <div v-if="!checkIfTokenExpired()" class="d-grid gap-2">
       <button
         class="btn btn-outline-dark"
         type="button"
@@ -18,6 +18,7 @@
 import Post from "@/components/Post";
 import axios from "axios";
 import { BIconPlusCircle } from "bootstrap-icons-vue";
+import { checkIfTokenExpired } from "../utlis/jwt-utils";
 
 export default {
   name: "Home",
@@ -35,6 +36,9 @@ export default {
       await axios
         .get(`${process.env.VUE_APP_SERVER}/posts`)
         .then((res) => (this.posts = res.data));
+    },
+    checkIfTokenExpired() {
+      return checkIfTokenExpired();
     },
   },
   mounted() {
