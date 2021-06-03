@@ -60,7 +60,6 @@ export default {
           setObjectInLocalStorage("user", res.data.user);
           setInLocalStorage("token", res.data.token);
           this.$router.push("/");
-          // TODO force re-render on navbar
         })
         .catch((err) => console.log(err));
     },

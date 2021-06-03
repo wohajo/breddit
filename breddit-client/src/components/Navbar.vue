@@ -44,12 +44,13 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="accountMenu">
               <li>
-                <router-link
+                <button
                   v-if="!this.checkIfTokenExpired()"
                   class="dropdown-item"
-                  to="/login"
-                  >Log out</router-link
+                  @click="this.logOut()"
                 >
+                  Log out
+                </button>
               </li>
               <li>
                 <router-link
@@ -76,13 +77,17 @@
 </template>
 
 <script>
-import { checkIfTokenExpired } from "../utlis/jwt-utils";
+import { checkIfTokenExpired, logOut } from "../utlis/jwt-utils";
 
 export default {
   name: "Navbar",
   methods: {
     checkIfTokenExpired() {
       return checkIfTokenExpired();
+    },
+    logOut() {
+      logOut();
+      this.$forceUpdate();
     },
   },
 };
