@@ -9,3 +9,10 @@ export const isInLocalStorage = (name) =>
 
 export const getFromLocalStorage = (name) =>
   isInLocalStorage(name) ? localStorage.getItem(name) : undefined;
+
+export const setObjectInLocalStorage = (name, object) => {
+  localStorage.setItem(name, JSON.stringify(object));
+};
+
+export const getObjectFromLocalStorage = (name) =>
+  isInLocalStorage(name) ? JSON.parse(localStorage.getItem(name)) : undefined;

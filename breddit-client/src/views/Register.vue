@@ -59,6 +59,17 @@
   </div>
 </template>
 
+<script>
+import { checkIfTokenExpired } from "../utlis/jwt-utils";
+
+export default {
+  name: "Register",
+  mounted() {
+    if (!checkIfTokenExpired()) this.$router.push("/");
+  },
+};
+</script>
+
 <style scoped lang="scss">
 form {
   button {

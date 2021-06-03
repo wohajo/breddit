@@ -31,6 +31,11 @@
 
 <script>
 import axios from "axios";
+import {
+  setObjectInLocalStorage,
+  setInLocalStorage,
+} from "../utlis/storage-utils";
+import { checkIfTokenExpired } from "../utlis/jwt-utils";
 
 export default {
   name: "Login",
@@ -40,16 +45,23 @@ export default {
       passwordInput: new String(),
     };
   },
+  mounted() {
+    if (!checkIfTokenExpired()) this.$router.push("/");
+  },
   methods: {
     login(event) {
       event.preventDefault();
-      console.log(this.nicknameInput);
       axios
         .post(`${process.env.VUE_APP_SERVER}/auth/login`, {
           nickname: this.nicknameInput,
           password: this.passwordInput,
         })
-        .then((res) => console.log(res))
+        .then((res) => {
+          setObjectInLocalStorage("user", res.data.user);
+          setInLocalStorage("token", res.data.token);
+          this.$router.push("/");
+          // TODO force re-render on navbar
+        })
         .catch((err) => console.log(err));
     },
   },
