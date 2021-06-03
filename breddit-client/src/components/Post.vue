@@ -19,6 +19,7 @@
       <button
         type="button"
         class="btn btn-comments btn-sm btn-outline-secondary"
+        @click="this.$router.push(`/post/${post.post_id}`)"
       >
         <BIconChatText />
       </button>
@@ -46,6 +47,7 @@ export default {
   name: "Post",
   props: {
     post: {
+      // TODO change post_id to id and user_nickname to nickname
       post_id: Number,
       title: String,
       content: String,
