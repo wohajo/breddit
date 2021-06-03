@@ -5,4 +5,11 @@ const getPostQuery = () => {
     subreddit s on p.subreddit_id = s.id`;
 };
 
+const getCommentsForPostsQuery = (postId) => {
+  return `SELECT c.id, c.content, c.parent_comment_id, c.post_id, 
+  ru.id as user_id, ru.nickname FROM COMMENT c 
+  JOIN REDDIT_USER ru ON ru.id = c.user_id WHERE post_id = ${postId}`;
+};
+
 exports.getPostQuery = getPostQuery;
+exports.getCommentsForPostsQuery = getCommentsForPostsQuery;
