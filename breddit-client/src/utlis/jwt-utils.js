@@ -23,3 +23,7 @@ export const logOut = () => {
   removeFromLocalStorage("token");
   removeFromLocalStorage("user");
 };
+
+export const axiosConfig = (token) => {
+  return { headers: { Authorization: `Bearer ${token}` } };
+};

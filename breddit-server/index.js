@@ -25,7 +25,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/auth", auth);
 app.use("/posts", posts);
-
 // initialization
 
 require("dotenv").config();

@@ -2,6 +2,7 @@ const { pool } = require("../db-config");
 const {
   getPostQuery,
   getCommentsForPostsQuery,
+  postCommentQuery,
 } = require("../utils/query-utils");
 
 const getPosts = async () => {
@@ -19,6 +20,17 @@ const getCommentsForPosts = async (postId) => {
   return res.rows;
 };
 
+const postCommentInPost = async (postId, userId, content) => {
+  const res = await pool.query(postCommentQuery(), [
+    content,
+    null,
+    userId,
+    postId,
+  ]);
+  return res.rows[0];
+};
+
 exports.getPost = getPost;
 exports.getPosts = getPosts;
 exports.getCommentsForPosts = getCommentsForPosts;
+exports.postCommentInPost = postCommentInPost;

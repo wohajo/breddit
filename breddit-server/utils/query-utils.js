@@ -11,5 +11,17 @@ const getCommentsForPostsQuery = (postId) => {
   JOIN REDDIT_USER ru ON ru.id = c.user_id WHERE post_id = ${postId}`;
 };
 
+const postCommentQuery = () => {
+  return `WITH inserted as (
+    INSERT INTO COMMENT (content, parent_comment_id, user_id, post_id)
+    VALUES ($1, $2, $3, $4) RETURNING *
+  )
+  SELECT inserted.id, inserted.content, inserted.parent_comment_id, inserted.post_id, 
+  ru.id as user_id, ru.nickname FROM inserted 
+  JOIN REDDIT_USER ru 
+  ON ru.id = inserted.user_id `;
+};
+
 exports.getPostQuery = getPostQuery;
 exports.getCommentsForPostsQuery = getCommentsForPostsQuery;
+exports.postCommentQuery = postCommentQuery;

@@ -6,6 +6,25 @@
         <div class="col-md-6">
           <div v-if="Object.keys(post).length !== 0" class="post-view">
             <Post key="post.id" :post="post" />
+            <form
+              v-if="this.checkIfLoggedIn()"
+              @submit="this.handleSendComment"
+            >
+              <div class="mb-3">
+                <textarea
+                  class="form-control"
+                  id="contentInput"
+                  placeholder="Text (optional)"
+                  rows="3"
+                  v-model="commentInput"
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <button type="submit" class="btn btn-outline-success">
+                  Submit
+                </button>
+              </div>
+            </form>
             <Comment
               v-for="comment in comments"
               :key="comment.id"
@@ -23,7 +42,9 @@
 import Post from "../components/Post.vue";
 import Comment from "../components/Comment.vue";
 import Navbar from "../components/Navbar.vue";
-import { getPost, getCommentsForPost } from "../api/postApi";
+import { getPost, getCommentsForPost, postCommentInPost } from "../api/postApi";
+import { checkIfLoggedIn } from "../utlis/jwt-utils";
+import { getFromLocalStorage } from "../utlis/storage-utils";
 
 export default {
   name: "PostView",
@@ -36,6 +57,7 @@ export default {
     return {
       post: new Object(),
       comments: new Array(),
+      commentInput: new String(),
     };
   },
   async mounted() {
@@ -45,6 +67,24 @@ export default {
     await getCommentsForPost(this.$route.params.postId).then(
       (res) => (this.comments = res.data)
     );
+  },
+  methods: {
+    checkIfLoggedIn() {
+      return checkIfLoggedIn();
+    },
+    handleSendComment(event) {
+      event.preventDefault();
+      postCommentInPost(
+        this.post.post_id,
+        this.commentInput,
+        getFromLocalStorage("token")
+      )
+        .then((res) => {
+          this.comments.push(res.data);
+          this.commentInput = "";
+        })
+        .catch((err) => console.log(err));
+    },
   },
 };
 </script>
