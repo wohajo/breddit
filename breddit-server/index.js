@@ -25,6 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/auth", auth);
 app.use("/posts", posts);
+app.use("/images", express.static("uploaded"));
 // initialization
 
 require("dotenv").config();

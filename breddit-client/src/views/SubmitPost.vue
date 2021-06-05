@@ -36,14 +36,13 @@
                 ></textarea>
               </div>
               <label>Images or videos (Optional)</label>
-              <div class="form-floating mb-3">
+              <div class="mb-3">
                 <input
-                  type="text"
                   class="form-control"
-                  id="imageInput"
-                  placeholder="Image URL"
+                  type="file"
+                  accept=".jpg, .jpeg, .png"
+                  id="formFile"
                 />
-                <label for="imageInput">Image URL</label>
               </div>
               <div class="form-floating mb-3">
                 <input

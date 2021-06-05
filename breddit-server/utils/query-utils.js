@@ -1,3 +1,8 @@
+const addPostQuery = () => {
+  return ` INSERT INTO POST (title, content, image_path, video_url, creation_date, subreddit_id, user_id)
+  VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`;
+};
+
 const getPostQuery = () => {
   return `SELECT p.id as post_id, p.title, p.content, p.image_path, p.video_url,
     p.creation_date, p.user_id, ru.nickname as user_nickname, p.subreddit_id, s.name
@@ -22,6 +27,7 @@ const postCommentQuery = () => {
   ON ru.id = inserted.user_id `;
 };
 
+exports.addPostQuery = addPostQuery;
 exports.getPostQuery = getPostQuery;
 exports.getCommentsForPostsQuery = getCommentsForPostsQuery;
 exports.postCommentQuery = postCommentQuery;

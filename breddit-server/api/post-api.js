@@ -1,5 +1,6 @@
 const { pool } = require("../db-config");
 const {
+  addPostQuery,
   getPostQuery,
   getCommentsForPostsQuery,
   postCommentQuery,
@@ -8,6 +9,27 @@ const {
 const getPosts = async () => {
   const res = await pool.query(getPostQuery());
   return res.rows;
+};
+
+const addPost = async (
+  title,
+  content,
+  image_path,
+  video_url,
+  creation_date,
+  subreddit_id,
+  user_id
+) => {
+  const res = await pool.query(`${addPostQuery()}`, [
+    title,
+    content,
+    image_path,
+    video_url,
+    creation_date,
+    subreddit_id,
+    user_id,
+  ]);
+  return res.rows[0];
 };
 
 const getPost = async (postId) => {
@@ -30,6 +52,7 @@ const postCommentInPost = async (postId, userId, content) => {
   return res.rows[0];
 };
 
+exports.addPost = addPost;
 exports.getPost = getPost;
 exports.getPosts = getPosts;
 exports.getCommentsForPosts = getCommentsForPosts;
