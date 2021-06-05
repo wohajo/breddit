@@ -14,5 +14,15 @@ const getUsersSubreddits = async (userId) => {
   return res.rows;
 };
 
+const joinUserToSubreddit = async (subredditId, userId) => {
+  const res = await pool.query(
+    `INSERT INTO SUBREDDIT_USER (user_id, subreddit_id) VALUES ($1, $2) RETURNING id`,
+    [userId, subredditId]
+  );
+
+  return res.rows[0];
+};
+
+exports.joinUserToSubreddit = joinUserToSubreddit;
 exports.getUsersSubreddits = getUsersSubreddits;
 exports.getAllSubreddits = getAllSubreddits;

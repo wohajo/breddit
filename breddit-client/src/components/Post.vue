@@ -1,6 +1,22 @@
 <template>
   <div class="card text-white bg-dark">
-    <div class="card-header">{{ postHeader }}</div>
+    <div class="card-header">
+      Posted by u/{{ this.post.user_nickname }} in
+      <span @click="this.$router.push(`/b/${this.post.subreddit_name}`)"
+        >b/{{ this.post.subreddit_name }}</span
+      >
+      <button
+        v-if="!this.hasJoined"
+        @click="this.join"
+        type="button"
+        class="btn btn-secondary btn-sm"
+      >
+        <BIconPlusCircle /> Join {{ this.hasJoined }} {{ this.hasUserJoined }}
+      </button>
+      <button v-else type="button" class="btn btn-dark btn-sm">
+        <BIconCheck /> Joined {{ this.hasJoined }} {{ this.hasUserJoined }}
+      </button>
+    </div>
     <div class="card-body">
       <h5 class="card-title">{{ post.title }}</h5>
       <p class="card-text">
@@ -29,6 +45,7 @@
       v-if="post.video_url !== null"
       id="ytplayer"
       type="text/html"
+      width="100%"
       height="360"
       v-bind:src="this.post.video_url.replace('watch?v=', 'embed/')"
       frameborder="0"
@@ -41,7 +58,11 @@ import {
   BIconChevronDown,
   BIconChevronUp,
   BIconChatText,
+  BIconPlusCircle,
+  BIconCheck,
 } from "bootstrap-icons-vue";
+import { joinSubreddit } from "../api/subredditApi";
+import { getFromLocalStorage } from "../utlis/storage-utils";
 
 export default {
   name: "Post",
@@ -60,23 +81,41 @@ export default {
       subreddit_name: String,
       votes: Number,
     },
+    hasUserJoined: Boolean,
   },
   components: {
     BIconChevronUp,
     BIconChevronDown,
     BIconChatText,
+    BIconPlusCircle,
+    BIconCheck,
   },
   data() {
     return {
       videoUrl: "",
+      // TODO fix wrong assign
+      hasJoined: this.hasUserJoined,
     };
   },
   computed: {
-    postHeader() {
-      return `Posted by u/${this.post.user_nickname} in b/${this.post.subreddit_name}`;
-    },
     formattedDate() {
       return new Date(this.post.creation_date).toLocaleString();
+    },
+  },
+  created() {
+    console.log(this.hasJoined);
+  },
+  methods: {
+    join() {
+      joinSubreddit(this.post.subreddit_id, getFromLocalStorage("token"))
+        .then((res) => {
+          // TODO compute joined button and display joined
+          console.log(res);
+        })
+        .catch((err) => {
+          // TODO catch and display error
+          console.log(err);
+        });
     },
   },
 };
@@ -94,6 +133,16 @@ export default {
   }
   .btn-comments {
     float: right;
+  }
+}
+
+.card-header {
+  button {
+    float: right;
+    border-radius: 16px;
+  }
+  span:hover {
+    cursor: pointer;
   }
 }
 </style>

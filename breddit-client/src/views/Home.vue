@@ -15,7 +15,12 @@
                 Add new post
               </button>
             </div>
-            <Post v-for="post in posts" :key="post.id" :post="post" />
+            <Post
+              v-for="post in posts"
+              :key="post.id"
+              :hasUserJoined="this.hasUserJoinedSubreddit(post.subreddit_id)"
+              :post="post"
+            />
           </div>
         </div>
       </div>
@@ -27,14 +32,19 @@
 import Post from "@/components/Post";
 import axios from "axios";
 import { BIconPlusCircle } from "bootstrap-icons-vue";
-import { checkIfLoggedIn } from "../utlis/jwt-utils";
+import { axiosConfig, checkIfLoggedIn } from "../utlis/jwt-utils";
 import Navbar from "../components/Navbar.vue";
+import {
+  getFromLocalStorage,
+  getObjectFromLocalStorage,
+} from "../utlis/storage-utils";
 
 export default {
   name: "Home",
   data() {
     return {
       posts: new Array(),
+      usersSubreddits: new Array(),
     };
   },
   components: {
@@ -48,12 +58,30 @@ export default {
         .get(`${process.env.VUE_APP_SERVER}/posts`)
         .then((res) => (this.posts = res.data));
     },
+    async getUsersSubreddits() {
+      await axios
+        .get(
+          `${process.env.VUE_APP_SERVER}/subreddits/user/${
+            getObjectFromLocalStorage("user").id
+          }`,
+          axiosConfig(getFromLocalStorage("token"))
+        )
+        .then((res) => (this.usersSubreddits = res.data));
+    },
     checkIfLoggedIn() {
       return checkIfLoggedIn();
+    },
+    hasUserJoinedSubreddit(subreddit_id) {
+      let hasJoined = false;
+      this.usersSubreddits.forEach((sub) => {
+        if (sub.id === subreddit_id) hasJoined = true;
+      });
+      return hasJoined;
     },
   },
   mounted() {
     this.getPosts();
+    this.getUsersSubreddits();
   },
 };
 </script>
