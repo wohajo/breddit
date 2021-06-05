@@ -5,6 +5,7 @@ const http = require("http").Server(app);
 const fs = require("fs");
 const auth = require("./routes/auth");
 const posts = require("./routes/posts");
+const subreddits = require("./routes/subreddits");
 const passport = require("./passport-config");
 // socket io
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/auth", auth);
 app.use("/posts", posts);
+app.use("/subreddits", subreddits);
 app.use("/images", express.static("uploaded"));
 // initialization
 

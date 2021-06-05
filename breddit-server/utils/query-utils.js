@@ -27,6 +27,26 @@ const postCommentQuery = () => {
   ON ru.id = inserted.user_id `;
 };
 
+const getAllSubredditsQuery = () => {
+  return `SELECT s.id, s.name, 
+  (SELECT COUNT(sb.id) 
+  FROM SUBREDDIT sb JOIN SUBREDDIT_USER sub ON sb.id = sub.subreddit_id
+  WHERE sb.id = s.id GROUP BY sb.id) as members_count
+  FROM SUBREDDIT s JOIN SUBREDDIT_USER su ON s.id = su.subreddit_id 
+  GROUP BY s.id`;
+};
+
+const getUsersSubredditsQuery = (userId) => {
+  return `SELECT s.id, s.name, 
+  (SELECT COUNT(sb.id) 
+  FROM SUBREDDIT sb JOIN SUBREDDIT_USER sub ON sb.id = sub.subreddit_id
+  WHERE sb.id = s.id GROUP BY sb.id) as members_count
+  FROM SUBREDDIT s JOIN SUBREDDIT_USER su ON s.id = su.subreddit_id 
+  WHERE su.user_id = ${userId}`;
+};
+
+exports.getAllSubredditsQuery = getAllSubredditsQuery;
+exports.getUsersSubredditsQuery = getUsersSubredditsQuery;
 exports.addPostQuery = addPostQuery;
 exports.getPostQuery = getPostQuery;
 exports.getCommentsForPostsQuery = getCommentsForPostsQuery;

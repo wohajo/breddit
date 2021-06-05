@@ -7,16 +7,17 @@
           <div class="submit">
             <h1>Submit new post</h1>
             <form>
-              <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="subredditInput"
-                  placeholder="Subreddit"
-                  required
-                />
-                <label for="subredditInput">Subreddit</label>
-              </div>
+              <select class="form-select">
+                <option selected>Subbreddit</option>
+                <option
+                  v-for="subreddit in subredditList"
+                  :key="subreddit.id"
+                  :value="subreddit.id"
+                >
+                  {{ subreddit.name }}
+                  <p class="members-count">{{ subreddit.members_count }}</p>
+                </option>
+              </select>
               <div class="form-floating mb-3">
                 <input
                   type="text"
@@ -73,6 +74,11 @@ export default {
   components: {
     Navbar,
   },
+  data() {
+    return {
+      subredditList: new Array(),
+    };
+  },
   mounted() {
     if (!checkIfLoggedIn()) this.$router.push("/");
   },
@@ -84,5 +90,14 @@ form {
   button {
     float: right;
   }
+}
+
+.form-select {
+  margin-bottom: 10px;
+}
+
+.members-count {
+  font-size: smaller;
+  color: grey;
 }
 </style>

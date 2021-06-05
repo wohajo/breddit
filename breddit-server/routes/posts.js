@@ -6,7 +6,10 @@ const {
   getCommentsForPosts,
   postCommentInPost,
 } = require("../api/post-api");
-const { getUserIdFromToken } = require("../utils/jwt-utils");
+const {
+  getUserIdFromToken,
+  extractTokenFromHeader,
+} = require("../utils/jwt-utils");
 
 const router = express.Router();
 const passport = require("passport");
@@ -28,22 +31,38 @@ router.post(
   upload.single("image"),
   // passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    // TODO reststric if user is in sub
-    // TODO check if video or file empty
-    await addPost(
-      req.body.title,
-      req.body.content,
-      req.file.filename,
-      req.body.video_url,
-      Date.now(),
-      req.body.subreddit_id,
-      req.body.user_id
-    )
-      .then((result) => res.status(200).json(result))
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json({ message: "Something went wrong" });
-      });
+    // TODO restrict if user is in sub
+    if (req.file === null && req.body.video_url !== null) {
+      await addPost(
+        req.body.title,
+        req.body.content,
+        null,
+        req.body.video_url,
+        new Date().toISOString(),
+        req.body.subreddit_id,
+        req.body.user_id
+      )
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ message: "Something went wrong" });
+        });
+    } else if (req.file !== null && req.body.video_url === null) {
+      await addPost(
+        req.body.title,
+        req.body.content,
+        req.file.filename,
+        null,
+        new Date().toISOString(),
+        req.body.subreddit_id,
+        req.body.user_id
+      )
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ message: "Something went wrong" });
+        });
+    }
   }
 );
 
@@ -79,7 +98,7 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     let token = req.headers.authorization;
-    const userId = getUserIdFromToken(token.replace("Bearer ", ""));
+    const userId = getUserIdFromToken(extractTokenFromHeader(token));
     await postCommentInPost(req.params.postId, userId, req.body.content)
       .then((result) => res.status(200).json(result))
       .catch((err) => {
