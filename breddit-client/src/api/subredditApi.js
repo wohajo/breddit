@@ -1,5 +1,9 @@
 const axios = require("axios");
 import { axiosConfig } from "../utlis/jwt-utils";
+import {
+  getFromLocalStorage,
+  getObjectFromLocalStorage,
+} from "../utlis/storage-utils";
 
 export const joinSubreddit = (subredditId, token) =>
   axios.post(
@@ -9,8 +13,15 @@ export const joinSubreddit = (subredditId, token) =>
   );
 
 export const leaveSubreddit = (subredditId, token) =>
-  axios.post(
+  axios.delete(
     `${process.env.VUE_APP_SERVER}/subreddits/${subredditId}/leave`,
-    {},
     axiosConfig(token)
+  );
+
+export const getUsersSubreddits = () =>
+  axios.get(
+    `${process.env.VUE_APP_SERVER}/subreddits/user/${
+      getObjectFromLocalStorage("user").id
+    }`,
+    axiosConfig(getFromLocalStorage("token"))
   );

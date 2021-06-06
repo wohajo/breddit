@@ -6,15 +6,15 @@
         >b/{{ this.post.subreddit_name }}</span
       >
       <button
-        v-if="!this.hasJoined"
-        @click="this.join"
+        v-if="!hasUserJoined"
+        @click="join"
         type="button"
         class="btn btn-secondary btn-sm"
       >
-        <BIconPlusCircle /> Join {{ this.hasJoined }} {{ this.hasUserJoined }}
+        <BIconPlusCircle /> Join
       </button>
-      <button v-else type="button" class="btn btn-dark btn-sm">
-        <BIconCheck /> Joined {{ this.hasJoined }} {{ this.hasUserJoined }}
+      <button v-else type="button" class="btn btn-dark btn-sm" @click="leave">
+        <BIconCheck /> Joined
       </button>
     </div>
     <div class="card-body">
@@ -61,7 +61,7 @@ import {
   BIconPlusCircle,
   BIconCheck,
 } from "bootstrap-icons-vue";
-import { joinSubreddit } from "../api/subredditApi";
+import { joinSubreddit, leaveSubreddit } from "../api/subredditApi";
 import { getFromLocalStorage } from "../utlis/storage-utils";
 
 export default {
@@ -81,7 +81,7 @@ export default {
       subreddit_name: String,
       votes: Number,
     },
-    hasUserJoined: Boolean,
+    usersSubreddits: Array,
   },
   components: {
     BIconChevronUp,
@@ -94,26 +94,37 @@ export default {
     return {
       videoUrl: "",
       // TODO fix wrong assign
-      hasJoined: this.hasUserJoined,
     };
   },
   computed: {
     formattedDate() {
       return new Date(this.post.creation_date).toLocaleString();
     },
-  },
-  created() {
-    console.log(this.hasJoined);
+    hasUserJoined() {
+      return (
+        this.usersSubreddits.find(({ id }) => id === this.post.subreddit_id) !==
+        undefined
+      );
+    },
   },
   methods: {
     join() {
       joinSubreddit(this.post.subreddit_id, getFromLocalStorage("token"))
         .then((res) => {
-          // TODO compute joined button and display joined
-          console.log(res);
+          this.$emit("usersSubredditListChanged");
+          console.log(res.data);
         })
         .catch((err) => {
-          // TODO catch and display error
+          console.log(err);
+        });
+    },
+    leave() {
+      leaveSubreddit(this.post.subreddit_id, getFromLocalStorage("token"))
+        .then((res) => {
+          this.$emit("usersSubredditListChanged");
+          console.log(res.data);
+        })
+        .catch((err) => {
           console.log(err);
         });
     },

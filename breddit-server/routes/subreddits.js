@@ -5,6 +5,7 @@ const {
   getAllSubreddits,
   getUsersSubreddits,
   joinUserToSubreddit,
+  removeUserFromSubreddit,
 } = require("../api/subreddit-api");
 const {
   getUserIdFromToken,
@@ -48,6 +49,21 @@ router.post(
     const userId = getUserIdFromToken(extractTokenFromHeader(token));
     // TODO prevent from multiple joining
     await joinUserToSubreddit(req.params.subredditId, userId)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ message: "Something went wrong" });
+      });
+  }
+);
+
+router.delete(
+  "/:subredditId/leave",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let token = req.headers.authorization;
+    const userId = getUserIdFromToken(extractTokenFromHeader(token));
+    await removeUserFromSubreddit(req.params.subredditId, userId)
       .then((result) => res.status(200).json(result))
       .catch((err) => {
         console.log(err);

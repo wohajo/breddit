@@ -38,7 +38,7 @@ const getPost = async (postId) => {
 };
 
 const getCommentsForPosts = async (postId) => {
-  const res = await pool.query(getCommentsForPostsQuery(postId));
+  const res = await pool.query(getCommentsForPostsQuery(), [postId]);
   return res.rows;
 };
 

@@ -5,7 +5,12 @@
       <div class="row justify-content-md-center">
         <div class="col-md-6">
           <div v-if="Object.keys(post).length !== 0" class="post-view">
-            <Post key="post.id" :post="post" />
+            <Post
+              key="post.id"
+              :post="post"
+              :usersSubreddits="usersSubreddits"
+              @usersSubredditListChanged="onUsersSubredditListChanged"
+            />
             <form
               v-if="this.checkIfLoggedIn()"
               @submit="this.handleSendComment"
@@ -43,6 +48,7 @@ import Post from "../components/Post.vue";
 import Comment from "../components/Comment.vue";
 import Navbar from "../components/Navbar.vue";
 import { getPost, getCommentsForPost, postCommentInPost } from "../api/postApi";
+const { getUsersSubreddits } = require("../api/subredditApi");
 import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import { getFromLocalStorage } from "../utlis/storage-utils";
 
@@ -58,6 +64,7 @@ export default {
       post: new Object(),
       comments: new Array(),
       commentInput: new String(),
+      usersSubreddits: new Array(),
     };
   },
   async mounted() {
@@ -67,10 +74,19 @@ export default {
     await getCommentsForPost(this.$route.params.postId).then(
       (res) => (this.comments = res.data)
     );
+    if (checkIfLoggedIn()) this.getUsersSubreddits();
   },
   methods: {
     checkIfLoggedIn() {
       return checkIfLoggedIn();
+    },
+    getUsersSubreddits() {
+      getUsersSubreddits()
+        .then((res) => (this.usersSubreddits = res.data))
+        .catch((err) => console.log(err));
+    },
+    onUsersSubredditListChanged() {
+      this.getUsersSubreddits();
     },
     handleSendComment(event) {
       event.preventDefault();

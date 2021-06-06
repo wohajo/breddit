@@ -10,10 +10,10 @@ const getPostQuery = () => {
     subreddit s on p.subreddit_id = s.id`;
 };
 
-const getCommentsForPostsQuery = (postId) => {
+const getCommentsForPostsQuery = () => {
   return `SELECT c.id, c.content, c.parent_comment_id, c.post_id, 
   ru.id as user_id, ru.nickname FROM COMMENT c 
-  JOIN REDDIT_USER ru ON ru.id = c.user_id WHERE post_id = ${postId}`;
+  JOIN REDDIT_USER ru ON ru.id = c.user_id WHERE post_id = $1`;
 };
 
 const postCommentQuery = () => {
@@ -36,13 +36,13 @@ const getAllSubredditsQuery = () => {
   GROUP BY s.id`;
 };
 
-const getUsersSubredditsQuery = (userId) => {
+const getUsersSubredditsQuery = () => {
   return `SELECT s.id, s.name, 
   (SELECT COUNT(sb.id) 
   FROM SUBREDDIT sb JOIN SUBREDDIT_USER sub ON sb.id = sub.subreddit_id
   WHERE sb.id = s.id GROUP BY sb.id) as members_count
   FROM SUBREDDIT s JOIN SUBREDDIT_USER su ON s.id = su.subreddit_id 
-  WHERE su.user_id = ${userId}`;
+  WHERE su.user_id = $1`;
 };
 
 exports.getAllSubredditsQuery = getAllSubredditsQuery;

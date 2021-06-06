@@ -5,7 +5,7 @@
       <div class="row justify-content-md-center">
         <div class="col-md-6">
           <div class="home">
-            <div v-if="this.checkIfLoggedIn()" class="d-grid gap-2">
+            <div v-if="checkIfLoggedIn" class="d-grid gap-2">
               <button
                 class="btn btn-outline-dark"
                 type="button"
@@ -18,8 +18,9 @@
             <Post
               v-for="post in posts"
               :key="post.id"
-              :hasUserJoined="this.hasUserJoinedSubreddit(post.subreddit_id)"
               :post="post"
+              :usersSubreddits="usersSubreddits"
+              @usersSubredditListChanged="onUsersSubredditListChanged"
             />
           </div>
         </div>
@@ -32,12 +33,9 @@
 import Post from "@/components/Post";
 import axios from "axios";
 import { BIconPlusCircle } from "bootstrap-icons-vue";
-import { axiosConfig, checkIfLoggedIn } from "../utlis/jwt-utils";
+import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import Navbar from "../components/Navbar.vue";
-import {
-  getFromLocalStorage,
-  getObjectFromLocalStorage,
-} from "../utlis/storage-utils";
+import { getUsersSubreddits } from "../api/subredditApi";
 
 export default {
   name: "Home",
@@ -58,30 +56,21 @@ export default {
         .get(`${process.env.VUE_APP_SERVER}/posts`)
         .then((res) => (this.posts = res.data));
     },
-    async getUsersSubreddits() {
-      await axios
-        .get(
-          `${process.env.VUE_APP_SERVER}/subreddits/user/${
-            getObjectFromLocalStorage("user").id
-          }`,
-          axiosConfig(getFromLocalStorage("token"))
-        )
-        .then((res) => (this.usersSubreddits = res.data));
-    },
     checkIfLoggedIn() {
       return checkIfLoggedIn();
     },
-    hasUserJoinedSubreddit(subreddit_id) {
-      let hasJoined = false;
-      this.usersSubreddits.forEach((sub) => {
-        if (sub.id === subreddit_id) hasJoined = true;
-      });
-      return hasJoined;
+    onUsersSubredditListChanged() {
+      this.getUsersSubreddits();
+    },
+    getUsersSubreddits() {
+      getUsersSubreddits()
+        .then((res) => (this.usersSubreddits = res.data))
+        .catch((err) => console.log(err));
     },
   },
   mounted() {
     this.getPosts();
-    this.getUsersSubreddits();
+    if (checkIfLoggedIn()) this.getUsersSubreddits();
   },
 };
 </script>

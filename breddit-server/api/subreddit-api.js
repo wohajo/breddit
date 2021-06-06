@@ -10,7 +10,7 @@ const getAllSubreddits = async () => {
 };
 
 const getUsersSubreddits = async (userId) => {
-  const res = await pool.query(getUsersSubredditsQuery(userId));
+  const res = await pool.query(getUsersSubredditsQuery(), [userId]);
   return res.rows;
 };
 
@@ -23,6 +23,16 @@ const joinUserToSubreddit = async (subredditId, userId) => {
   return res.rows[0];
 };
 
+const removeUserFromSubreddit = async (subredditId, userId) => {
+  const res = await pool.query(
+    `DELETE FROM SUBREDDIT_USER WHERE user_id = $1 AND subreddit_id = $2`,
+    [userId, subredditId]
+  );
+
+  return res.rows[0];
+};
+
+exports.removeUserFromSubreddit = removeUserFromSubreddit;
 exports.joinUserToSubreddit = joinUserToSubreddit;
 exports.getUsersSubreddits = getUsersSubreddits;
 exports.getAllSubreddits = getAllSubreddits;
