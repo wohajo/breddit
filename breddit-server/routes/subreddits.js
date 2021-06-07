@@ -61,6 +61,7 @@ router.delete(
   "/:subredditId/leave",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
+    // TODO delete user from mods aswell
     let token = req.headers.authorization;
     const userId = getUserIdFromToken(extractTokenFromHeader(token));
     await removeUserFromSubreddit(req.params.subredditId, userId)

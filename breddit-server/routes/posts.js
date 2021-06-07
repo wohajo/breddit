@@ -29,10 +29,14 @@ const upload = multer({ storage: storage });
 router.post(
   "/",
   upload.single("image"),
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     // TODO restrict if user is in sub
-    if (req.file === null && req.body.video_url !== null) {
+    let token = req.headers.authorization;
+    const userId = getUserIdFromToken(extractTokenFromHeader(token));
+    const f = req.file || null;
+
+    if (f === null) {
       await addPost(
         req.body.title,
         req.body.content,
@@ -40,22 +44,22 @@ router.post(
         req.body.video_url,
         new Date().toISOString(),
         req.body.subreddit_id,
-        req.body.user_id
+        userId
       )
         .then((result) => res.status(200).json(result))
         .catch((err) => {
           console.log(err);
           res.status(500).json({ message: "Something went wrong" });
         });
-    } else if (req.file !== null && req.body.video_url === null) {
+    } else {
       await addPost(
         req.body.title,
         req.body.content,
-        req.file.filename,
-        null,
+        `${process.env.SERVER_HOST}/images/${req.file.filename}`,
+        req.body.video_url,
         new Date().toISOString(),
         req.body.subreddit_id,
-        req.body.user_id
+        userId
       )
         .then((result) => res.status(200).json(result))
         .catch((err) => {

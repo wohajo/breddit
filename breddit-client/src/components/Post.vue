@@ -41,7 +41,7 @@
       </button>
     </div>
     <img v-if="post.image_path !== null" v-bind:src="post.image_path" />
-    <!-- <iframe
+    <iframe
       v-if="post.video_url !== null"
       id="ytplayer"
       type="text/html"
@@ -49,7 +49,7 @@
       height="360"
       v-bind:src="this.post.video_url.replace('watch?v=', 'embed/')"
       frameborder="0"
-    ></iframe> -->
+    ></iframe>
   </div>
 </template>
 
@@ -93,7 +93,6 @@ export default {
   data() {
     return {
       videoUrl: "",
-      // TODO fix wrong assign
     };
   },
   computed: {
