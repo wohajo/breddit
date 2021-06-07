@@ -2,12 +2,13 @@ const { pool } = require("../db-config");
 const {
   addPostQuery,
   getPostQuery,
+  getPostsQuery,
   getCommentsForPostsQuery,
   postCommentQuery,
 } = require("../utils/query-utils");
 
-const getPosts = async () => {
-  const res = await pool.query(getPostQuery());
+const getPosts = async (limit, offset) => {
+  const res = await pool.query(getPostsQuery(), [limit, offset]);
   return res.rows;
 };
 
@@ -33,7 +34,7 @@ const addPost = async (
 };
 
 const getPost = async (postId) => {
-  const res = await pool.query(`${getPostQuery()} WHERE p.id = ${postId}`);
+  const res = await pool.query(getPostQuery(), [postId]);
   return res.rows[0];
 };
 

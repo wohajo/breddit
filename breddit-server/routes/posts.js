@@ -67,7 +67,10 @@ router.post(
 );
 
 router.get("/", async (req, res) => {
-  await getPosts()
+  let limit = 10;
+  let offset = req.query.page - 1 || 0;
+
+  await getPosts(limit, offset)
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);

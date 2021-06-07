@@ -5,9 +5,16 @@ const addPostQuery = () => {
 
 const getPostQuery = () => {
   return `SELECT p.id as post_id, p.title, p.content, p.image_path, p.video_url,
-    p.creation_date, p.user_id, ru.nickname as user_nickname, p.subreddit_id, s.name
-    as subreddit_name, (SELECT SUM (vote) FROM post_vote WHERE post_id = p.id) as votes FROM post p JOIN reddit_user ru on p.user_id = ru.id JOIN
-    subreddit s on p.subreddit_id = s.id`;
+  p.creation_date, p.user_id, ru.nickname as user_nickname, p.subreddit_id, s.name
+  as subreddit_name, (SELECT SUM (vote) FROM post_vote WHERE post_id = p.id) as votes FROM post p JOIN reddit_user ru on p.user_id = ru.id JOIN
+  subreddit s on p.subreddit_id = s.id WHERE p.id = $1`;
+};
+
+const getPostsQuery = () => {
+  return `SELECT p.id as post_id, p.title, p.content, p.image_path, p.video_url,
+  p.creation_date, p.user_id, ru.nickname as user_nickname, p.subreddit_id, s.name
+  as subreddit_name, (SELECT SUM (vote) FROM post_vote WHERE post_id = p.id) as votes FROM post p JOIN reddit_user ru on p.user_id = ru.id JOIN
+  subreddit s on p.subreddit_id = s.id ORDER BY "creation_date" DESC LIMIT $1 OFFSET $2`;
 };
 
 const getCommentsForPostsQuery = () => {
@@ -45,9 +52,10 @@ const getUsersSubredditsQuery = () => {
   WHERE su.user_id = $1`;
 };
 
+exports.getPostQuery = getPostQuery;
 exports.getAllSubredditsQuery = getAllSubredditsQuery;
 exports.getUsersSubredditsQuery = getUsersSubredditsQuery;
 exports.addPostQuery = addPostQuery;
-exports.getPostQuery = getPostQuery;
+exports.getPostsQuery = getPostsQuery;
 exports.getCommentsForPostsQuery = getCommentsForPostsQuery;
 exports.postCommentQuery = postCommentQuery;

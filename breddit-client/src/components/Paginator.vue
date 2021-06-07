@@ -1,0 +1,64 @@
+<template>
+  <div class="paginator">
+    <button @click="previousPage" class="btn btn-secondary">
+      <BIconArrowLeftCircle /> Back
+    </button>
+    <span>{{ currentPage }}</span>
+    <button @click="nextPage" class="btn btn-secondary pagination-button-right">
+      Next <BIconArrowRightCircle />
+    </button>
+  </div>
+</template>
+
+<script>
+import {
+  BIconArrowRightCircle,
+  BIconArrowLeftCircle,
+} from "bootstrap-icons-vue";
+
+export default {
+  name: "Paginator",
+  components: {
+    BIconArrowRightCircle,
+    BIconArrowLeftCircle,
+  },
+  props: {
+    pageCount: Number,
+  },
+  data() {
+    return {
+      currentPage: 1,
+    };
+  },
+  methods: {
+    previousPage() {
+      if (this.currentPage !== 1) {
+        this.currentPage--;
+        this.$emit("pageChanged", this.currentPage);
+        window.scrollTo(0, 0);
+      }
+    },
+    nextPage() {
+      if (this.currentPage !== this.pageCount) {
+        this.currentPage++;
+        this.$emit("pageChanged", this.currentPage);
+        window.scrollTo(0, 0);
+      }
+    },
+  },
+};
+</script>
+
+<style lang="scss">
+.pagination-button-right {
+  float: right;
+}
+
+.paginator {
+  span {
+    font-size: larger;
+  }
+  display: flex;
+  justify-content: space-between;
+}
+</style>

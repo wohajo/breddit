@@ -23,6 +23,7 @@
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
           </div>
+          <Paginator :pageCount="100" @pageChanged="onPageChanged" />
         </div>
       </div>
     </div>
@@ -36,6 +37,7 @@ import { BIconPlusCircle } from "bootstrap-icons-vue";
 import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import Navbar from "../components/Navbar.vue";
 import { getUsersSubreddits } from "../api/subredditApi";
+import Paginator from "../components/Paginator.vue";
 
 export default {
   name: "Home",
@@ -49,11 +51,16 @@ export default {
     Post,
     BIconPlusCircle,
     Navbar,
+    Paginator,
   },
   methods: {
-    async getPosts() {
+    async getPosts(pageNumber) {
       await axios
-        .get(`${process.env.VUE_APP_SERVER}/posts`)
+        .get(`${process.env.VUE_APP_SERVER}/posts`, {
+          params: {
+            page: pageNumber,
+          },
+        })
         .then((res) => (this.posts = res.data));
     },
     checkIfLoggedIn() {
@@ -67,9 +74,12 @@ export default {
         .then((res) => (this.usersSubreddits = res.data))
         .catch((err) => console.log(err));
     },
+    onPageChanged(number) {
+      this.getPosts(number);
+    },
   },
   mounted() {
-    this.getPosts();
+    this.getPosts(1);
     if (checkIfLoggedIn()) this.getUsersSubreddits();
   },
 };
