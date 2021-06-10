@@ -40,7 +40,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              {{ this.getUsername() }}
+              {{ getUsername() }}
             </a>
             <ul class="dropdown-menu" aria-labelledby="accountMenu">
               <li>

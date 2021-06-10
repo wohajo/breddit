@@ -13,3 +13,17 @@ export const postCommentInPost = (postId, comment, token) =>
     { content: comment },
     axiosConfig(token)
   );
+
+export const getPosts = (pageNumber) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/posts`, {
+    params: {
+      page: pageNumber,
+    },
+  });
+
+export const getPostsFromSubreddit = (subName, pageNumber) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/posts/subreddit/${subName}`, {
+    params: {
+      page: pageNumber,
+    },
+  });

@@ -32,7 +32,16 @@ const removeUserFromSubreddit = async (subredditId, userId) => {
   return res.rows[0];
 };
 
+const getSubredditByName = async (subName) => {
+  const res = await pool.query(`SELECT * FROM SUBREDDIT WHERE name = $1`, [
+    subName,
+  ]);
+
+  return res.rows[0];
+};
+
 exports.removeUserFromSubreddit = removeUserFromSubreddit;
 exports.joinUserToSubreddit = joinUserToSubreddit;
 exports.getUsersSubreddits = getUsersSubreddits;
 exports.getAllSubreddits = getAllSubreddits;
+exports.getSubredditByName = getSubredditByName;

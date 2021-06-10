@@ -5,7 +5,7 @@
       <div class="row justify-content-md-center">
         <div class="col-md-6">
           <div class="home">
-            <div v-if="checkIfLoggedIn" class="d-grid gap-2">
+            <div v-if="checkIfLoggedIn()" class="d-grid gap-2">
               <button
                 class="btn btn-outline-dark"
                 type="button"
@@ -17,12 +17,13 @@
             </div>
             <Post
               v-for="post in posts"
-              :key="post.id"
               :post="post"
+              :key="post.post_id"
               :usersSubreddits="usersSubreddits"
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
           </div>
+          <!-- TODO everywhere where there is a paginator change pageCount -->
           <Paginator :pageCount="100" @pageChanged="onPageChanged" />
         </div>
       </div>
@@ -32,12 +33,12 @@
 
 <script>
 import Post from "@/components/Post";
-import axios from "axios";
 import { BIconPlusCircle } from "bootstrap-icons-vue";
 import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import Navbar from "../components/Navbar.vue";
 import { getUsersSubreddits } from "../api/subredditApi";
 import Paginator from "../components/Paginator.vue";
+import { getPosts } from "../api/postApi";
 
 export default {
   name: "Home",
@@ -55,13 +56,7 @@ export default {
   },
   methods: {
     async getPosts(pageNumber) {
-      await axios
-        .get(`${process.env.VUE_APP_SERVER}/posts`, {
-          params: {
-            page: pageNumber,
-          },
-        })
-        .then((res) => (this.posts = res.data));
+      await getPosts(pageNumber).then((res) => (this.posts = res.data));
     },
     checkIfLoggedIn() {
       return checkIfLoggedIn();

@@ -6,6 +6,7 @@ const {
   getUsersSubreddits,
   joinUserToSubreddit,
   removeUserFromSubreddit,
+  getSubredditByName,
 } = require("../api/subreddit-api");
 const {
   getUserIdFromToken,
@@ -40,6 +41,15 @@ router.get(
         });
   }
 );
+
+router.get("/:subName", async (req, res) => {
+  await getSubredditByName(req.params.subName)
+    .then((result) => res.status(200).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
+});
 
 router.post(
   "/:subredditId/join",

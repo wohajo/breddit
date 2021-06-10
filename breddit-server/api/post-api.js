@@ -5,10 +5,20 @@ const {
   getPostsQuery,
   getCommentsForPostsQuery,
   postCommentQuery,
+  getPostsFromSubredditQuery,
 } = require("../utils/query-utils");
 
 const getPosts = async (limit, offset) => {
   const res = await pool.query(getPostsQuery(), [limit, offset]);
+  return res.rows;
+};
+
+const getPostsFromSubreddit = async (subId, limit, offset) => {
+  const res = await pool.query(getPostsFromSubredditQuery(), [
+    subId,
+    limit,
+    offset,
+  ]);
   return res.rows;
 };
 
@@ -58,3 +68,4 @@ exports.getPost = getPost;
 exports.getPosts = getPosts;
 exports.getCommentsForPosts = getCommentsForPosts;
 exports.postCommentInPost = postCommentInPost;
+exports.getPostsFromSubreddit = getPostsFromSubreddit;

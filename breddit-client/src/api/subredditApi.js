@@ -25,3 +25,6 @@ export const getUsersSubreddits = () =>
     }`,
     axiosConfig(getFromLocalStorage("token"))
   );
+
+export const getSubreddit = (subName) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/subreddits/${subName}`);
