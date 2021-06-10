@@ -123,7 +123,9 @@ export default {
         if (this.videoUrl.length > 0) form.append("video_url", this.videoUrl);
 
         // TODO error handling
-        axios.post(`${process.env.VUE_APP_SERVER}/posts`, form, config);
+        axios
+          .post(`${process.env.VUE_APP_SERVER}/posts`, form, config)
+          .then((res) => this.$router.push(`/post/${res.data.id}`));
       }
     },
     onFileChange(event) {

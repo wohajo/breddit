@@ -48,6 +48,21 @@ const getPost = async (postId) => {
   return res.rows[0];
 };
 
+const getPageCountForAll = async () => {
+  const res = await pool.query(
+    `SELECT ((COUNT(id)/10) + 1) as page_count FROM post`
+  );
+  return res.rows[0];
+};
+
+const getPageCountForSubreddit = async (subId) => {
+  const res = await pool.query(
+    `SELECT ((COUNT(id)/10) + 1) as page_count FROM post WHERE post.subreddit_id = $1`,
+    [subId]
+  );
+  return res.rows[0];
+};
+
 const getCommentsForPosts = async (postId) => {
   const res = await pool.query(getCommentsForPostsQuery(), [postId]);
   return res.rows;
@@ -69,3 +84,5 @@ exports.getPosts = getPosts;
 exports.getCommentsForPosts = getCommentsForPosts;
 exports.postCommentInPost = postCommentInPost;
 exports.getPostsFromSubreddit = getPostsFromSubreddit;
+exports.getPageCountForAll = getPageCountForAll;
+exports.getPageCountForSubreddit = getPageCountForSubreddit;

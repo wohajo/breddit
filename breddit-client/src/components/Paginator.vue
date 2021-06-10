@@ -3,7 +3,7 @@
     <button @click="previousPage" class="btn btn-secondary">
       <BIconArrowLeftCircle /> Back
     </button>
-    <span>{{ currentPage }}</span>
+    <span>{{ currentPage }} / {{ pageCount }}</span>
     <button @click="nextPage" class="btn btn-secondary pagination-button-right">
       Next <BIconArrowRightCircle />
     </button>
@@ -32,14 +32,14 @@ export default {
   },
   methods: {
     previousPage() {
-      if (this.currentPage !== 1) {
+      if (this.currentPage > 1) {
         this.currentPage--;
         this.$emit("pageChanged", this.currentPage);
         window.scrollTo(0, 0);
       }
     },
     nextPage() {
-      if (this.currentPage !== this.pageCount) {
+      if (this.currentPage < this.pageCount) {
         this.currentPage++;
         this.$emit("pageChanged", this.currentPage);
         window.scrollTo(0, 0);

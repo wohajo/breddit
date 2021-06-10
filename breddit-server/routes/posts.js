@@ -6,6 +6,8 @@ const {
   getCommentsForPosts,
   postCommentInPost,
   getPostsFromSubreddit,
+  getPageCountForAll,
+  getPageCountForSubreddit,
 } = require("../api/post-api");
 const {
   getUserIdFromToken,
@@ -83,11 +85,29 @@ router.get("/", async (req, res) => {
     });
 });
 
+router.get("/pageCount", async (req, res) => {
+  await getPageCountForAll()
+    .then((result) => res.status(200).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
+});
+
 router.get("/subreddit/:subId", async (req, res) => {
   let limit = 10;
   let offset = req.query.page - 1 || 0;
 
   await getPostsFromSubreddit(req.params.subId, limit, offset * 10)
+    .then((result) => res.status(200).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
+});
+
+router.get("/subreddit/:subId/pageCount", async (req, res) => {
+  await getPageCountForSubreddit(req.params.subId)
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);

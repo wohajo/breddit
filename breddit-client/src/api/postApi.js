@@ -27,3 +27,9 @@ export const getPostsFromSubreddit = (subName, pageNumber) =>
       page: pageNumber,
     },
   });
+
+export const getPageCountForSubreddit = (subId) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/posts/subreddit/${subId}/pageCount`);
+
+export const getPageCountForAll = () =>
+  axios.get(`${process.env.VUE_APP_SERVER}/posts/pageCount`);

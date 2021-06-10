@@ -14,7 +14,7 @@
         <BIconPlusCircle /> Join
       </button>
       <button v-else type="button" class="btn btn-dark btn-sm" @click="leave">
-        <BIconCheck /> Joined
+        <BIconCheck /> Leave
       </button>
     </div>
     <div class="card-body">
@@ -109,9 +109,8 @@ export default {
   methods: {
     join() {
       joinSubreddit(this.post.subreddit_id, getFromLocalStorage("token"))
-        .then((res) => {
+        .then(() => {
           this.$emit("usersSubredditListChanged");
-          console.log(res.data);
         })
         .catch((err) => {
           console.log(err);
@@ -119,9 +118,8 @@ export default {
     },
     leave() {
       leaveSubreddit(this.post.subreddit_id, getFromLocalStorage("token"))
-        .then((res) => {
+        .then(() => {
           this.$emit("usersSubredditListChanged");
-          console.log(res.data);
         })
         .catch((err) => {
           console.log(err);

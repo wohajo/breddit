@@ -2,6 +2,7 @@ const { pool } = require("../db-config");
 const {
   getAllSubredditsQuery,
   getUsersSubredditsQuery,
+  getSubredditByNameQuery,
 } = require("../utils/query-utils");
 
 const getAllSubreddits = async () => {
@@ -33,9 +34,7 @@ const removeUserFromSubreddit = async (subredditId, userId) => {
 };
 
 const getSubredditByName = async (subName) => {
-  const res = await pool.query(`SELECT * FROM SUBREDDIT WHERE name = $1`, [
-    subName,
-  ]);
+  const res = await pool.query(getSubredditByNameQuery(), [subName]);
 
   return res.rows[0];
 };

@@ -50,6 +50,15 @@ const getAllSubredditsQuery = () => {
   GROUP BY s.id`;
 };
 
+const getSubredditByNameQuery = () => {
+  return `SELECT s.id, s.name, s.description,
+  (SELECT COUNT(sb.id) 
+  FROM SUBREDDIT sb JOIN SUBREDDIT_USER sub ON sb.id = sub.subreddit_id
+  WHERE sb.id = s.id GROUP BY sb.id) as members_count
+  FROM SUBREDDIT s JOIN SUBREDDIT_USER su ON s.id = su.subreddit_id WHERE s.name = $1
+  GROUP BY s.id`;
+};
+
 const getUsersSubredditsQuery = () => {
   return `SELECT s.id, s.name, 
   (SELECT COUNT(sb.id) 
@@ -67,3 +76,4 @@ exports.getPostsQuery = getPostsQuery;
 exports.getCommentsForPostsQuery = getCommentsForPostsQuery;
 exports.postCommentQuery = postCommentQuery;
 exports.getPostsFromSubredditQuery = getPostsFromSubredditQuery;
+exports.getSubredditByNameQuery = getSubredditByNameQuery;
