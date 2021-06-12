@@ -58,7 +58,11 @@
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
           </div>
-          <Paginator :pageCount="pageCount" @pageChanged="onPageChanged" />
+          <Paginator
+            :pageCount="pageCount"
+            :currentPage="currentPage"
+            @pageChanged="onPageChanged"
+          />
         </div>
       </div>
     </div>
@@ -84,6 +88,7 @@ export default {
       newActive: true,
       hotActive: false,
       bestActive: false,
+      currentPage: 1,
     };
   },
   components: {
@@ -109,7 +114,9 @@ export default {
     },
     onPageChanged(number) {
       // TODO handle different get requests based on buttons
-      this.getPosts(number).then(
+      console.log(this.currentPage, number);
+      this.currentPage = this.currentPage + number;
+      this.getPosts(this.currentPage).then(
         (res) => (this.pageCount = res.data.page_count)
       );
       getPageCountForAll();
@@ -135,7 +142,9 @@ export default {
   },
   mounted() {
     this.getPosts(1);
-    getPageCountForAll().then((res) => (this.pageCount = res.data.page_count));
+    getPageCountForAll().then(
+      (res) => (this.pageCount = Number(res.data.page_count))
+    );
     if (checkIfLoggedIn()) this.getUsersSubreddits();
   },
 };

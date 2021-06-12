@@ -23,26 +23,21 @@ export default {
     BIconArrowLeftCircle,
   },
   props: {
+    currentPage: Number,
     pageCount: Number,
-  },
-  data() {
-    return {
-      currentPage: 1,
-    };
   },
   methods: {
     previousPage() {
       if (this.currentPage > 1) {
-        this.currentPage--;
-        this.$emit("pageChanged", this.currentPage);
-        window.scrollTo(0, 0);
+        this.$emit("pageChanged", -1);
+        // window.scrollTo(0, 0);
       }
     },
     nextPage() {
       if (this.currentPage < this.pageCount) {
-        this.currentPage++;
-        this.$emit("pageChanged", this.currentPage);
-        window.scrollTo(0, 0);
+        console.log(this.currentPage, this.pageCount);
+        this.$emit("pageChanged", 1);
+        // window.scrollTo(0, 0);
       }
     },
   },

@@ -26,7 +26,11 @@
             :usersSubreddits="usersSubreddits"
             @usersSubredditListChanged="onUsersSubredditListChanged"
           />
-          <Paginator :pageCount="pageCount" @pageChanged="onPageChanged" />
+          <Paginator
+            :pageCount="pageCount"
+            :currentPage="currentPage"
+            @pageChanged="onPageChanged"
+          />
         </div>
       </div>
     </div>
@@ -57,6 +61,7 @@ export default {
       usersSubreddits: [],
       isFound: true,
       pageCount: 0,
+      currentPage: 1,
     };
   },
   mounted() {
@@ -95,7 +100,8 @@ export default {
       );
     },
     onPageChanged(number) {
-      this.getPostsFromSubreddit(this.subInfo.id, number);
+      this.currentPage = this.currentPage + number;
+      this.getPostsFromSubreddit(this.subInfo.id, this.currentPage);
       getPageCountForSubreddit(this.subInfo.id).then(
         (res) => (this.pageCount = res.data.page_count)
       );
