@@ -76,7 +76,7 @@ import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import Navbar from "../components/Navbar.vue";
 import { getUsersSubreddits } from "../api/subredditApi";
 import Paginator from "../components/Paginator.vue";
-import { getPageCountForAll, getPosts } from "../api/postApi";
+import { getPageCountForAll, getPosts, getBestPosts } from "../api/postApi";
 
 export default {
   name: "Home",
@@ -101,6 +101,9 @@ export default {
     async getPosts(pageNumber) {
       await getPosts(pageNumber).then((res) => (this.posts = res.data));
     },
+    async getBestPosts(pageNumber) {
+      await getBestPosts(pageNumber).then((res) => (this.posts = res.data));
+    },
     checkIfLoggedIn() {
       return checkIfLoggedIn();
     },
@@ -114,30 +117,39 @@ export default {
     },
     onPageChanged(number) {
       // TODO handle different get requests based on buttons
-      console.log(this.currentPage, number);
       this.currentPage = this.currentPage + number;
-      this.getPosts(this.currentPage).then(
-        (res) => (this.pageCount = res.data.page_count)
-      );
+
+      if (this.newActive)
+        this.getPosts(this.currentPage).then(
+          (res) => (this.pageCount = res.data.page_count)
+        );
+
+      if (this.bestActive)
+        this.getBestPosts(this.currentPage).then(
+          (res) => (this.pageCount = res.data.page_count)
+        );
+
       getPageCountForAll();
+    },
+    handleNewClick() {
+      this.bestActive = false;
+      this.hotActive = false;
+      this.newActive = true;
+      this.currentPage = 1;
+      this.getPosts(this.currentPage);
     },
     handleBestClick() {
       this.bestActive = true;
       this.hotActive = false;
       this.newActive = false;
-      // TODO request posts ordered by number of votes
+      this.currentPage = 1;
+      this.getBestPosts(this.currentPage);
     },
     handleHotClick() {
       this.bestActive = false;
       this.hotActive = true;
       this.newActive = false;
       // TODO request posts orrdered by number of comments
-    },
-    handleNewClick() {
-      this.bestActive = false;
-      this.hotActive = false;
-      this.newActive = true;
-      // TODO request posts ordered by date
     },
   },
   mounted() {

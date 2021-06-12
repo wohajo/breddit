@@ -30,14 +30,14 @@ export default {
     previousPage() {
       if (this.currentPage > 1) {
         this.$emit("pageChanged", -1);
-        // window.scrollTo(0, 0);
+        window.scrollTo(0, 0);
       }
     },
     nextPage() {
       if (this.currentPage < this.pageCount) {
         console.log(this.currentPage, this.pageCount);
         this.$emit("pageChanged", 1);
-        // window.scrollTo(0, 0);
+        window.scrollTo(0, 0);
       }
     },
   },
