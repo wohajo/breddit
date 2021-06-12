@@ -15,6 +15,41 @@
                 Add new post
               </button>
             </div>
+            <div class="btn-group" role="group">
+              <button
+                @click="handleBestClick"
+                v-if="!bestActive"
+                type="button"
+                class="btn btn-dark"
+              >
+                Best
+              </button>
+              <button v-else type="button" class="btn btn-secondary">
+                Best
+              </button>
+              <button
+                @click="handleHotClick"
+                v-if="!hotActive"
+                type="button"
+                class="btn btn-dark"
+              >
+                Hot
+              </button>
+              <button v-else type="button" class="btn btn-secondary">
+                Hot
+              </button>
+              <button
+                @click="handleNewClick"
+                v-if="!newActive"
+                type="button"
+                class="btn btn-dark"
+              >
+                New
+              </button>
+              <button v-else type="button" class="btn btn-secondary">
+                New
+              </button>
+            </div>
             <Post
               v-for="post in posts"
               :post="post"
@@ -46,6 +81,9 @@ export default {
       posts: new Array(),
       usersSubreddits: new Array(),
       pageCount: 0,
+      newActive: true,
+      hotActive: false,
+      bestActive: false,
     };
   },
   components: {
@@ -70,10 +108,29 @@ export default {
         .catch((err) => console.log(err));
     },
     onPageChanged(number) {
+      // TODO handle different get requests based on buttons
       this.getPosts(number).then(
         (res) => (this.pageCount = res.data.page_count)
       );
       getPageCountForAll();
+    },
+    handleBestClick() {
+      this.bestActive = true;
+      this.hotActive = false;
+      this.newActive = false;
+      // TODO request posts ordered by number of votes
+    },
+    handleHotClick() {
+      this.bestActive = false;
+      this.hotActive = true;
+      this.newActive = false;
+      // TODO request posts orrdered by number of comments
+    },
+    handleNewClick() {
+      this.bestActive = false;
+      this.hotActive = false;
+      this.newActive = true;
+      // TODO request posts ordered by date
     },
   },
   mounted() {
@@ -87,5 +144,11 @@ export default {
 <style lang="scss">
 .d-grid {
   margin-bottom: 1vh;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2vh;
 }
 </style>

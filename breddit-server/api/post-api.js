@@ -6,6 +6,8 @@ const {
   getCommentsForPostsQuery,
   postCommentQuery,
   getPostsFromSubredditQuery,
+  getBestPostsQuery,
+  getBestPostsFromSubredditQuery,
 } = require("../utils/query-utils");
 
 const getPosts = async (limit, offset) => {
@@ -13,8 +15,22 @@ const getPosts = async (limit, offset) => {
   return res.rows;
 };
 
+const getBestPosts = async (limit, offset) => {
+  const res = await pool.query(getBestPostsQuery(), [limit, offset]);
+  return res.rows;
+};
+
 const getPostsFromSubreddit = async (subId, limit, offset) => {
   const res = await pool.query(getPostsFromSubredditQuery(), [
+    subId,
+    limit,
+    offset,
+  ]);
+  return res.rows;
+};
+
+const getBestPostsFromSubreddit = async (subId, limit, offset) => {
+  const res = await pool.query(getBestPostsFromSubredditQuery(), [
     subId,
     limit,
     offset,
@@ -86,3 +102,5 @@ exports.postCommentInPost = postCommentInPost;
 exports.getPostsFromSubreddit = getPostsFromSubreddit;
 exports.getPageCountForAll = getPageCountForAll;
 exports.getPageCountForSubreddit = getPageCountForSubreddit;
+exports.getBestPosts = getBestPosts;
+exports.getBestPostsFromSubreddit = getBestPostsFromSubreddit;

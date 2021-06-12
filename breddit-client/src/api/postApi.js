@@ -21,8 +21,22 @@ export const getPosts = (pageNumber) =>
     },
   });
 
+export const getBestPosts = (pageNumber) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/posts/best`, {
+    params: {
+      page: pageNumber,
+    },
+  });
+
 export const getPostsFromSubreddit = (subName, pageNumber) =>
   axios.get(`${process.env.VUE_APP_SERVER}/posts/subreddit/${subName}`, {
+    params: {
+      page: pageNumber,
+    },
+  });
+
+export const getBestPostsFromSubreddit = (subName, pageNumber) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/posts/subreddit/${subName}/best`, {
     params: {
       page: pageNumber,
     },
