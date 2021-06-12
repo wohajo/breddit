@@ -76,7 +76,12 @@ import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import Navbar from "../components/Navbar.vue";
 import { getUsersSubreddits } from "../api/subredditApi";
 import Paginator from "../components/Paginator.vue";
-import { getPageCountForAll, getPosts, getBestPosts } from "../api/postApi";
+import {
+  getPageCountForAll,
+  getPosts,
+  getBestPosts,
+  getHotPosts,
+} from "../api/postApi";
 
 export default {
   name: "Home",
@@ -104,6 +109,9 @@ export default {
     async getBestPosts(pageNumber) {
       await getBestPosts(pageNumber).then((res) => (this.posts = res.data));
     },
+    async getHotPosts(pageNumber) {
+      await getHotPosts(pageNumber).then((res) => (this.posts = res.data));
+    },
     checkIfLoggedIn() {
       return checkIfLoggedIn();
     },
@@ -116,7 +124,6 @@ export default {
         .catch((err) => console.log(err));
     },
     onPageChanged(number) {
-      // TODO handle different get requests based on buttons
       this.currentPage = this.currentPage + number;
 
       if (this.newActive)
@@ -126,6 +133,11 @@ export default {
 
       if (this.bestActive)
         this.getBestPosts(this.currentPage).then(
+          (res) => (this.pageCount = res.data.page_count)
+        );
+
+      if (this.hotActive)
+        this.getHotPosts(this.currentPage).then(
           (res) => (this.pageCount = res.data.page_count)
         );
 
@@ -149,7 +161,8 @@ export default {
       this.bestActive = false;
       this.hotActive = true;
       this.newActive = false;
-      // TODO request posts orrdered by number of comments
+      this.currentPage = 1;
+      this.getHotPosts(this.currentPage);
     },
   },
   mounted() {

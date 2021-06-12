@@ -37,7 +37,7 @@
         class="btn btn-comments btn-sm btn-outline-secondary"
         @click="this.$router.push(`/post/${post.post_id}`)"
       >
-        <BIconChatText />
+        <BIconChatText /> {{ post.comment_count }}
       </button>
     </div>
     <img v-if="post.image_path !== null" v-bind:src="post.image_path" />
@@ -80,6 +80,7 @@ export default {
       subreddit_id: Number,
       subreddit_name: String,
       votes: Number,
+      comment_count: Number,
     },
     usersSubreddits: Array,
   },

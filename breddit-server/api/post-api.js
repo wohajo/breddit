@@ -8,6 +8,8 @@ const {
   getPostsFromSubredditQuery,
   getBestPostsQuery,
   getBestPostsFromSubredditQuery,
+  getHotPostsQuery,
+  getHotFromSubredditQuery,
 } = require("../utils/query-utils");
 
 const getPosts = async (limit, offset) => {
@@ -17,6 +19,11 @@ const getPosts = async (limit, offset) => {
 
 const getBestPosts = async (limit, offset) => {
   const res = await pool.query(getBestPostsQuery(), [limit, offset]);
+  return res.rows;
+};
+
+const getHotPosts = async (limit, offset) => {
+  const res = await pool.query(getHotPostsQuery(), [limit, offset]);
   return res.rows;
 };
 
@@ -31,6 +38,15 @@ const getPostsFromSubreddit = async (subId, limit, offset) => {
 
 const getBestPostsFromSubreddit = async (subId, limit, offset) => {
   const res = await pool.query(getBestPostsFromSubredditQuery(), [
+    subId,
+    limit,
+    offset,
+  ]);
+  return res.rows;
+};
+
+const getHotPostsFromSubreddit = async (subId, limit, offset) => {
+  const res = await pool.query(getHotFromSubredditQuery(), [
     subId,
     limit,
     offset,
@@ -104,3 +120,5 @@ exports.getPageCountForAll = getPageCountForAll;
 exports.getPageCountForSubreddit = getPageCountForSubreddit;
 exports.getBestPosts = getBestPosts;
 exports.getBestPostsFromSubreddit = getBestPostsFromSubreddit;
+exports.getHotPosts = getHotPosts;
+exports.getHotPostsFromSubreddit = getHotPostsFromSubreddit;

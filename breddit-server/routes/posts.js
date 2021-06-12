@@ -10,6 +10,8 @@ const {
   getPageCountForSubreddit,
   getBestPosts,
   getBestPostsFromSubreddit,
+  getHotPosts,
+  getHotPostsFromSubreddit,
 } = require("../api/post-api");
 const {
   getUserIdFromToken,
@@ -99,6 +101,18 @@ router.get("/best", async (req, res) => {
     });
 });
 
+router.get("/hot", async (req, res) => {
+  let limit = 10;
+  let offset = req.query.page - 1 || 0;
+
+  await getHotPosts(limit, offset * 10)
+    .then((result) => res.status(200).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
+});
+
 router.get("/pageCount", async (req, res) => {
   await getPageCountForAll()
     .then((result) => res.status(200).json(result))
@@ -125,6 +139,18 @@ router.get("/subreddit/:subId/best", async (req, res) => {
   let offset = req.query.page - 1 || 0;
 
   await getBestPostsFromSubreddit(req.params.subId, limit, offset * 10)
+    .then((result) => res.status(200).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
+});
+
+router.get("/subreddit/:subId/hot", async (req, res) => {
+  let limit = 10;
+  let offset = req.query.page - 1 || 0;
+
+  await getHotPostsFromSubreddit(req.params.subId, limit, offset * 10)
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
