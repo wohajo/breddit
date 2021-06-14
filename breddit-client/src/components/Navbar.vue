@@ -17,7 +17,7 @@
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <router-link class="nav-link active" aria-current="page" to="/"
-              >Home</router-link
+              >All</router-link
             >
           </li>
           <li class="nav-item">
@@ -29,15 +29,46 @@
             >
           </li>
         </ul>
-        <form class="d-flex">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button class="btn btn-outline-primary" type="submit">Search</button>
-        </form>
+        <div class="d-flex">
+          <button
+            v-if="!searchInPosts"
+            type="button"
+            class="btn switch-btn btn-secondary btn-sm me-2"
+            @click="switchSearch"
+          >
+            Subreddits
+          </button>
+          <button
+            v-else
+            type="button"
+            class="btn switch-btn btn-secondary btn-sm me-2"
+            @click="switchSearch"
+          >
+            Posts
+          </button>
+          <form v-if="searchInPosts" class="d-flex">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Search in subreddits"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-primary" type="submit">
+              Search
+            </button>
+          </form>
+          <form v-else class="d-flex">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Search in posts"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-primary" type="submit">
+              Search
+            </button>
+          </form>
+        </div>
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
             <a
@@ -51,6 +82,14 @@
               {{ getUsername() }}
             </a>
             <ul class="dropdown-menu" aria-labelledby="accountMenu">
+              <li>
+                <button
+                  v-if="!this.checkIfTokenExpired()"
+                  class="dropdown-item"
+                >
+                  My profile
+                </button>
+              </li>
               <li>
                 <button
                   v-if="!this.checkIfTokenExpired()"
@@ -93,6 +132,11 @@ import {
 
 export default {
   name: "Navbar",
+  data() {
+    return {
+      searchInPosts: true,
+    };
+  },
   methods: {
     checkIfTokenExpired() {
       return checkIfTokenExpired();
@@ -106,6 +150,9 @@ export default {
       this.$forceUpdate();
       this.$router.push("/");
     },
+    switchSearch() {
+      this.searchInPosts = !this.searchInPosts;
+    },
   },
 };
 </script>
@@ -113,5 +160,14 @@ export default {
 <style lang="scss">
 nav {
   margin-bottom: 5vh;
+}
+.switch-btn {
+  border-radius: 16px;
+  margin-right: 10px;
+}
+
+li.dropdown:last-child .dropdown-menu {
+  right: 0;
+  left: auto;
 }
 </style>
