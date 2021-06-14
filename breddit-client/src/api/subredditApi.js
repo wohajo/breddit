@@ -28,3 +28,10 @@ export const getUsersSubreddits = () =>
 
 export const getSubreddit = (subName) =>
   axios.get(`${process.env.VUE_APP_SERVER}/subreddits/${subName}`);
+
+export const createSubreddit = (name, description, token) =>
+  axios.post(
+    `${process.env.VUE_APP_SERVER}/subreddits`,
+    { name: name, description: description },
+    axiosConfig(token)
+  );

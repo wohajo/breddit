@@ -54,8 +54,8 @@ export default {
     },
     memberCount() {
       return this.hasUserJoined
-        ? Number(this.subInfo.members_count) + 1
-        : Number(this.subInfo.members_count);
+        ? Number(this.subInfo.members_count)
+        : Number(this.subInfo.members_count) - 1;
     },
   },
   methods: {

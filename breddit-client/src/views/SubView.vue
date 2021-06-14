@@ -70,7 +70,7 @@ export default {
         this.subInfo = res.data;
         this.getPostsFromSubreddit(res.data.id, 1);
         getPageCountForSubreddit(res.data.id).then(
-          (res) => (this.pageCount = res.data.page_count)
+          (res) => (this.pageCount = Number(res.data.page_count))
         );
       })
       .catch((err) => console.log(err));
@@ -103,7 +103,7 @@ export default {
       this.currentPage = this.currentPage + number;
       this.getPostsFromSubreddit(this.subInfo.id, this.currentPage);
       getPageCountForSubreddit(this.subInfo.id).then(
-        (res) => (this.pageCount = res.data.page_count)
+        (res) => (this.pageCount = Number(res.data.page_count))
       );
     },
   },

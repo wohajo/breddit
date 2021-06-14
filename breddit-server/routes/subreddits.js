@@ -7,6 +7,8 @@ const {
   joinUserToSubreddit,
   removeUserFromSubreddit,
   getSubredditByName,
+  makeUserModerator,
+  createSubreddit,
 } = require("../api/subreddit-api");
 const {
   getUserIdFromToken,
@@ -80,6 +82,35 @@ router.delete(
         console.log(err);
         res.status(500).json({ message: "Something went wrong" });
       });
+  }
+);
+
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let subObject = {};
+    let token = req.headers.authorization;
+    const userId = getUserIdFromToken(extractTokenFromHeader(token));
+    if ((await getSubredditByName(req.body.name)) !== undefined)
+      res.status(409).json({ message: "This subreddit already exists" });
+    else if (req.body.name.length === 0 || req.body.description.length === 0)
+      res
+        .status(403)
+        .json({ message: "You must provide name and description" });
+    else {
+      await createSubreddit(req.body.name, req.body.description)
+        .then((result) => {
+          subObject = result;
+          return makeUserModerator(userId, result.id);
+        })
+        .then(() => joinUserToSubreddit(subObject.id, userId))
+        .then(() => res.status(200).json(subObject))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ message: "Something went wrong" });
+        });
+    }
   }
 );
 

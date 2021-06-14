@@ -5,6 +5,7 @@ import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
 import PostView from "../views/PostView.vue";
 import SubView from "../views/SubView.vue";
+import CreateSub from "../views/CreateSub.vue";
 
 const routes = [
   {
@@ -29,13 +30,18 @@ const routes = [
   },
   {
     path: "/post/:postId",
-    name: "",
+    name: "Post",
     component: PostView,
   },
   {
     path: "/b/:subredditName",
-    name: "",
+    name: "Subreddit",
     component: SubView,
+  },
+  {
+    path: "/createSubreddit",
+    name: "createSubreddit",
+    component: CreateSub,
   },
 ];
 

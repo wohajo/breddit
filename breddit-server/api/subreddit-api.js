@@ -39,8 +39,28 @@ const getSubredditByName = async (subName) => {
   return res.rows[0];
 };
 
+const makeUserModerator = async (userId, subredditId) => {
+  const res = await pool.query(
+    `INSERT INTO subreddit_moderator (user_id, subreddit_id) VALUES ($1, $2) RETURNING id`,
+    [userId, subredditId]
+  );
+
+  return res.rows[0];
+};
+
+const createSubreddit = async (name, description) => {
+  const res = await pool.query(
+    `INSERT INTO subreddit (name, description) VALUES ($1, $2) RETURNING id`,
+    [name, description]
+  );
+
+  return res.rows[0];
+};
+
 exports.removeUserFromSubreddit = removeUserFromSubreddit;
 exports.joinUserToSubreddit = joinUserToSubreddit;
 exports.getUsersSubreddits = getUsersSubreddits;
 exports.getAllSubreddits = getAllSubreddits;
 exports.getSubredditByName = getSubredditByName;
+exports.makeUserModerator = makeUserModerator;
+exports.createSubreddit = createSubreddit;
