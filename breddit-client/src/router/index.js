@@ -6,6 +6,7 @@ import Login from "../views/Login.vue";
 import PostView from "../views/PostView.vue";
 import SubView from "../views/SubView.vue";
 import CreateSub from "../views/CreateSub.vue";
+import Profile from "../views/Profile.vue";
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: "/createSubreddit",
     name: "createSubreddit",
     component: CreateSub,
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
   },
 ];
 

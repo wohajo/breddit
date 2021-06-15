@@ -17,10 +17,10 @@
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <router-link class="nav-link active" aria-current="page" to="/"
-              >All</router-link
+              >Home</router-link
             >
           </li>
-          <li class="nav-item">
+          <li v-if="!this.checkIfTokenExpired()" class="nav-item">
             <router-link
               class="nav-link active"
               aria-current="page"
@@ -83,12 +83,13 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="accountMenu">
               <li>
-                <button
+                <router-link
                   v-if="!this.checkIfTokenExpired()"
                   class="dropdown-item"
+                  to="/profile"
                 >
                   My profile
-                </button>
+                </router-link>
               </li>
               <li>
                 <button
