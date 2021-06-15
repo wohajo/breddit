@@ -14,5 +14,14 @@ const getUserById = async (id) => {
   else return null;
 };
 
+const getUsersWithNicknameLike = async (searchQuery) => {
+  const res = await pool.query(
+    `SELECT id, nickname from reddit_user WHERE nickname LIKE $1`,
+    [`%${searchQuery}%`]
+  );
+  return res.rows;
+};
+
 exports.getUserById = getUserById;
 exports.getUserByUsername = getUserByUsername;
+exports.getUsersWithNicknameLike = getUsersWithNicknameLike;

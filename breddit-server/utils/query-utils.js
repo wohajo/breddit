@@ -25,6 +25,22 @@ FROM post p JOIN reddit_user ru on p.user_id = ru.id JOIN
   subreddit s on p.subreddit_id = s.id ORDER BY "creation_date" DESC LIMIT $1 OFFSET $2`;
 };
 
+const getPostsFromUserSubsQuery = () => {
+  return `
+  SELECT p.id as post_id, p.title, p.content, p.image_path, p.video_url,
+  p.creation_date, p.user_id, ru.nickname as user_nickname, p.subreddit_id, s.name
+  as subreddit_name, (
+  CASE WHEN (SELECT SUM (vote) FROM post_vote WHERE post_id = p.id) IS NULL THEN 0
+       ELSE (SELECT SUM (vote) FROM post_vote WHERE post_id = p.id)
+  END
+  ) as votes,
+  (SELECT COUNT(c.id) FROM COMMENT c WHERE c.post_id = p.id) as comment_count
+  FROM post p JOIN reddit_user ru on p.user_id = ru.id JOIN
+  subreddit s on p.subreddit_id = s.id 
+  WHERE s.name in (SELECT s.name FROM subreddit s JOIN subreddit_user su ON s.id = su.subreddit_id WHERE su.user_id = $1) 
+  ORDER BY "creation_date"`;
+};
+
 const getHotPostsQuery = () => {
   return `SELECT p.id as post_id, p.title, p.content, p.image_path, p.video_url,
   p.creation_date, p.user_id, ru.nickname as user_nickname, p.subreddit_id, s.name
@@ -109,29 +125,85 @@ const postCommentQuery = () => {
 
 const getAllSubredditsQuery = () => {
   return `SELECT s.id, s.name, 
-  (SELECT COUNT(sb.id) 
-  FROM SUBREDDIT sb JOIN SUBREDDIT_USER sub ON sb.id = sub.subreddit_id
-  WHERE sb.id = s.id GROUP BY sb.id) as members_count
+  ( CASE
+    WHEN (SELECT Count(sb.id)
+          FROM   subreddit sb
+                 JOIN subreddit_user sub
+                   ON sb.id = sub.subreddit_id
+          WHERE  sb.id = s.id
+          GROUP  BY sb.id) IS NULL THEN 0
+    ELSE (SELECT Count(sb.id)
+          FROM   subreddit sb
+                 JOIN subreddit_user sub
+                   ON sb.id = sub.subreddit_id
+          WHERE  sb.id = s.id
+          GROUP  BY sb.id)
+  END ) AS members_count
   FROM SUBREDDIT s JOIN SUBREDDIT_USER su ON s.id = su.subreddit_id 
   GROUP BY s.id`;
 };
 
 const getSubredditByNameQuery = () => {
   return `SELECT s.id, s.name, s.description,
-  (SELECT COUNT(sb.id) 
-  FROM SUBREDDIT sb JOIN SUBREDDIT_USER sub ON sb.id = sub.subreddit_id
-  WHERE sb.id = s.id GROUP BY sb.id) as members_count
+  ( CASE
+    WHEN (SELECT Count(sb.id)
+          FROM   subreddit sb
+                 JOIN subreddit_user sub
+                   ON sb.id = sub.subreddit_id
+          WHERE  sb.id = s.id
+          GROUP  BY sb.id) IS NULL THEN 0
+    ELSE (SELECT Count(sb.id)
+          FROM   subreddit sb
+                 JOIN subreddit_user sub
+                   ON sb.id = sub.subreddit_id
+          WHERE  sb.id = s.id
+          GROUP  BY sb.id)
+  END ) AS members_count
   FROM SUBREDDIT s JOIN SUBREDDIT_USER su ON s.id = su.subreddit_id WHERE s.name = $1
   GROUP BY s.id`;
 };
 
 const getUsersSubredditsQuery = () => {
   return `SELECT s.id, s.name, 
-  (SELECT COUNT(sb.id) 
-  FROM SUBREDDIT sb JOIN SUBREDDIT_USER sub ON sb.id = sub.subreddit_id
-  WHERE sb.id = s.id GROUP BY sb.id) as members_count
+  ( CASE
+    WHEN (SELECT Count(sb.id)
+          FROM   subreddit sb
+                 JOIN subreddit_user sub
+                   ON sb.id = sub.subreddit_id
+          WHERE  sb.id = s.id
+          GROUP  BY sb.id) IS NULL THEN 0
+    ELSE (SELECT Count(sb.id)
+          FROM   subreddit sb
+                 JOIN subreddit_user sub
+                   ON sb.id = sub.subreddit_id
+          WHERE  sb.id = s.id
+          GROUP  BY sb.id)
+  END ) AS members_count
   FROM SUBREDDIT s JOIN SUBREDDIT_USER su ON s.id = su.subreddit_id 
   WHERE su.user_id = $1`;
+};
+
+const getModeratedSubredditsQuery = () => {
+  return `SELECT sm.subreddit_id,
+  s.NAME,
+  ( CASE
+      WHEN (SELECT Count(sb.id)
+            FROM   subreddit sb
+                   JOIN subreddit_user sub
+                     ON sb.id = sub.subreddit_id
+            WHERE  sb.id = s.id
+            GROUP  BY sb.id) IS NULL THEN 0
+      ELSE (SELECT Count(sb.id)
+            FROM   subreddit sb
+                   JOIN subreddit_user sub
+                     ON sb.id = sub.subreddit_id
+            WHERE  sb.id = s.id
+            GROUP  BY sb.id)
+    END ) AS members_count
+FROM   subreddit_moderator sm
+  JOIN subreddit s
+    ON sm.subreddit_id = s.id
+WHERE  user_id = $1`;
 };
 
 exports.getPostQuery = getPostQuery;
@@ -147,3 +219,4 @@ exports.getBestPostsQuery = getBestPostsQuery;
 exports.getBestPostsFromSubredditQuery = getBestPostsFromSubredditQuery;
 exports.getHotFromSubredditQuery = getHotFromSubredditQuery;
 exports.getHotPostsQuery = getHotPostsQuery;
+exports.getModeratedSubredditsQuery = getModeratedSubredditsQuery;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <navbar />
+    <Navbar />
     <div class="container-sm">
       <div class="row justify-content-md-center">
         <div class="col-md-6">

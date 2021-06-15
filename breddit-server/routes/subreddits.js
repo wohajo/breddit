@@ -9,6 +9,9 @@ const {
   getSubredditByName,
   makeUserModerator,
   createSubreddit,
+  getSubModerators,
+  getModBySubNameAndId,
+  removeSubModerator,
 } = require("../api/subreddit-api");
 const {
   getUserIdFromToken,
@@ -52,6 +55,63 @@ router.get("/:subName", async (req, res) => {
       res.status(500).json({ message: "Something went wrong" });
     });
 });
+
+router.get("/:subId/moderators", async (req, res) => {
+  await getSubModerators(req.params.subId)
+    .then((result) => res.status(200).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
+});
+
+router.post(
+  "/:subId/moderators/add/:userId",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let token = req.headers.authorization;
+    const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
+    const modObj = await getModBySubNameAndId(req.params.subId, userIdToken);
+
+    if (modObj !== undefined) {
+      const newModObj = await getModBySubNameAndId(
+        req.params.subId,
+        req.params.userId
+      );
+      if (newModObj === undefined) {
+        await makeUserModerator(req.params.userId, req.params.subId)
+          .then((result) => res.status(200).json(result))
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({ message: "Something went wrong" });
+          });
+      } else {
+        res.status(403).json({ message: "User is already a moderator" });
+      }
+    } else {
+      res.status(401).json({ message: "You are not a moderator" });
+    }
+  }
+);
+
+router.delete(
+  "/:subId/moderators/remove/:userId",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let token = req.headers.authorization;
+    const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
+    const modObj = await getModBySubNameAndId(req.params.subId, userIdToken);
+
+    if (modObj !== undefined)
+      await removeSubModerator(req.params.userId, req.params.subId)
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ message: "Something went wrong" });
+        });
+    else res.status(401).json({ message: "You are not a moderator" });
+  }
+);
 
 router.post(
   "/:subredditId/join",

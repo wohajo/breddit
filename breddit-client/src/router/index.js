@@ -7,6 +7,7 @@ import PostView from "../views/PostView.vue";
 import SubView from "../views/SubView.vue";
 import CreateSub from "../views/CreateSub.vue";
 import Profile from "../views/Profile.vue";
+import ModPanel from "../views/ModPanel.vue";
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
+  },
+  {
+    path: "/modPanel",
+    name: "modPanel",
+    component: ModPanel,
   },
 ];
 

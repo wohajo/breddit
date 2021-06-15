@@ -86,6 +86,15 @@
                 <router-link
                   v-if="!this.checkIfTokenExpired()"
                   class="dropdown-item"
+                  to="/modPanel"
+                >
+                  Moderation panel
+                </router-link>
+              </li>
+              <li>
+                <router-link
+                  v-if="!this.checkIfTokenExpired()"
+                  class="dropdown-item"
                   to="/profile"
                 >
                   My profile

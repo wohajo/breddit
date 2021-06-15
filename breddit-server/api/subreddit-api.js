@@ -3,6 +3,7 @@ const {
   getAllSubredditsQuery,
   getUsersSubredditsQuery,
   getSubredditByNameQuery,
+  getModeratedSubredditsQuery,
 } = require("../utils/query-utils");
 
 const getAllSubreddits = async () => {
@@ -39,9 +40,27 @@ const getSubredditByName = async (subName) => {
   return res.rows[0];
 };
 
+const getModBySubNameAndId = async (subName, userId) => {
+  const res = await pool.query(
+    `SELECT * FROM subreddit_moderator WHERE subreddit_id = $1 AND user_id = $2`,
+    [subName, userId]
+  );
+
+  return res.rows[0];
+};
+
 const makeUserModerator = async (userId, subredditId) => {
   const res = await pool.query(
     `INSERT INTO subreddit_moderator (user_id, subreddit_id) VALUES ($1, $2) RETURNING id`,
+    [userId, subredditId]
+  );
+
+  return res.rows[0];
+};
+
+const removeSubModerator = async (userId, subredditId) => {
+  const res = await pool.query(
+    `DELETE FROM subreddit_moderator su WHERE su.user_id = $1 AND su.subreddit_id = $2`,
     [userId, subredditId]
   );
 
@@ -57,6 +76,21 @@ const createSubreddit = async (name, description) => {
   return res.rows[0];
 };
 
+const getSubModerators = async (subId) => {
+  const res = await pool.query(
+    `SELECT ru.id, ru.nickname FROM reddit_user ru JOIN subreddit_moderator su ON su.user_id = ru.id WHERE su.subreddit_id = $1`,
+    [subId]
+  );
+
+  return res.rows;
+};
+
+const getModeratedSubreddits = async (userId) => {
+  const res = await pool.query(getModeratedSubredditsQuery(), [userId]);
+
+  return res.rows;
+};
+
 exports.removeUserFromSubreddit = removeUserFromSubreddit;
 exports.joinUserToSubreddit = joinUserToSubreddit;
 exports.getUsersSubreddits = getUsersSubreddits;
@@ -64,3 +98,7 @@ exports.getAllSubreddits = getAllSubreddits;
 exports.getSubredditByName = getSubredditByName;
 exports.makeUserModerator = makeUserModerator;
 exports.createSubreddit = createSubreddit;
+exports.getModeratedSubreddits = getModeratedSubreddits;
+exports.getSubModerators = getSubModerators;
+exports.removeSubModerator = removeSubModerator;
+exports.getModBySubNameAndId = getModBySubNameAndId;
