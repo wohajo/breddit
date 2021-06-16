@@ -25,6 +25,7 @@
             :post="post"
             :usersSubreddits="usersSubreddits"
             :moderatedSubreddits="moderatedSubreddits"
+            @deleted="onPostDeleted"
             @usersSubredditListChanged="onUsersSubredditListChanged"
           />
           <Paginator
@@ -113,6 +114,9 @@ export default {
         this.usersSubreddits.find(({ id }) => id === this.subInfo.id) !==
         undefined
       );
+    },
+    onPostDeleted(id) {
+      this.posts = this.posts.filter((post) => post.post_id !== id);
     },
     onPageChanged(number) {
       this.currentPage = this.currentPage + number;

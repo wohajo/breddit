@@ -43,6 +43,7 @@
         v-if="isModeratorOfThisSub"
         type="button"
         class="btn btn-delete btn-danger btn-sm"
+        @click="deletePost"
       >
         <BIconXCircle /> delete
       </button>
@@ -72,6 +73,7 @@ import {
 } from "bootstrap-icons-vue";
 import { joinSubreddit, leaveSubreddit } from "../api/subredditApi";
 import { getFromLocalStorage } from "../utlis/storage-utils";
+import axios from "axios";
 
 export default {
   name: "Post",
@@ -141,6 +143,20 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    deletePost() {
+      axios
+        .delete(`${process.env.VUE_APP_SERVER}/posts/${this.post.post_id}`, {
+          headers: {
+            Authorization: `Bearer ${getFromLocalStorage("token")}`,
+          },
+          params: { subId: this.post.subreddit_id },
+        })
+        .then(() => {
+          alert("removed sucessfully");
+          this.$emit("deleted", this.post.post_id);
+        })
+        .catch((err) => console.log(err.response.data.message));
     },
   },
 };

@@ -56,6 +56,7 @@
               :key="post.post_id"
               :usersSubreddits="usersSubreddits"
               :moderatedSubreddits="moderatedSubreddits"
+              @deleted="onPostDeleted"
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
           </div>
@@ -116,6 +117,9 @@ export default {
     },
     async getHotPosts(pageNumber) {
       await getHotPosts(pageNumber).then((res) => (this.posts = res.data));
+    },
+    onPostDeleted(id) {
+      this.posts = this.posts.filter((post) => post.post_id !== id);
     },
     checkIfLoggedIn() {
       return checkIfLoggedIn();

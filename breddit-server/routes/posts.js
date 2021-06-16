@@ -13,6 +13,7 @@ const {
   getBestPostsFromSubreddit,
   getHotPosts,
   getHotPostsFromSubreddit,
+  removePost,
 } = require("../api/post-api");
 const {
   getUserIdFromToken,
@@ -212,6 +213,25 @@ router.delete(
 
     if (modObj !== undefined)
       await removeComment(req.params.postId, req.params.commentId)
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ message: "Something went wrong" });
+        });
+    else res.status(401).json({ message: "You are not a moderator" });
+  }
+);
+
+router.delete(
+  "/:postId",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let token = req.headers.authorization;
+    const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
+    const modObj = await getModBySubNameAndId(req.query.subId, userIdToken);
+
+    if (modObj !== undefined)
+      await removePost(req.params.postId)
         .then((result) => res.status(200).json(result))
         .catch((err) => {
           console.log(err);

@@ -10,6 +10,7 @@
               :post="post"
               :usersSubreddits="usersSubreddits"
               :moderatedSubreddits="moderatedSubreddits"
+              @deleted="onPostDeleted"
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
             <form
@@ -88,6 +89,9 @@ export default {
     }
   },
   methods: {
+    onPostDeleted() {
+      this.$router.push("/");
+    },
     checkIfLoggedIn() {
       return checkIfLoggedIn();
     },
