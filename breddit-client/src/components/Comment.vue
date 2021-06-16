@@ -1,17 +1,32 @@
 <template>
-  <div class="card">
+  <div class="card text-white bg-dark">
     <div class="card-body">
       <h6 class="card-subtitle mb-2 text-muted">{{ comment.nickname }}</h6>
       <p class="card-text">
         {{ comment.content }}
       </p>
+      <button
+        v-if="isModeratorOfThisSub"
+        type="button"
+        class="btn btn-delete btn-danger btn-sm"
+        @click="deleteComment"
+      >
+        <BIconXCircle /> delete
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import { BIconXCircle } from "bootstrap-icons-vue";
+import { getFromLocalStorage } from "../utlis/storage-utils";
+import axios from "axios";
+
 export default {
   name: "Comment",
+  components: {
+    BIconXCircle,
+  },
   props: {
     comment: {
       id: Number,
@@ -20,6 +35,32 @@ export default {
       post_id: Number,
       user_id: Number,
       nickname: String,
+    },
+    subreddit_id: Number,
+    moderatedSubreddits: Array,
+  },
+  computed: {
+    isModeratorOfThisSub() {
+      return this.moderatedSubreddits.some(
+        (sub) => sub.subreddit_id === this.subreddit_id
+      );
+    },
+  },
+  methods: {
+    deleteComment() {
+      axios
+        .delete(
+          `${process.env.VUE_APP_SERVER}/posts/${this.comment.post_id}/comments/${this.comment.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${getFromLocalStorage("token")}`,
+            },
+            params: { subId: this.subreddit_id },
+          }
+        )
+        .then(() => alert("removed sucessfully"))
+        .catch((err) => console.log(err.response.data.message));
+      this.$emit("deleted", this.comment.id);
     },
   },
 };

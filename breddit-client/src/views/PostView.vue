@@ -3,12 +3,13 @@
     <Navbar />
     <div class="container-sm">
       <div class="row justify-content-md-center">
-        <div class="col-md-6">
+        <div class="col-md-9">
           <div v-if="Object.keys(post).length !== 0" class="post-view">
             <Post
               key="post.id"
               :post="post"
               :usersSubreddits="usersSubreddits"
+              :moderatedSubreddits="moderatedSubreddits"
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
             <form
@@ -19,7 +20,7 @@
                 <textarea
                   class="form-control"
                   id="contentInput"
-                  placeholder="Text (optional)"
+                  placeholder="Comment here"
                   rows="3"
                   v-model="commentInput"
                 ></textarea>
@@ -34,6 +35,9 @@
               v-for="comment in comments"
               :key="comment.id"
               :comment="comment"
+              :subreddit_id="post.subreddit_id"
+              :moderatedSubreddits="moderatedSubreddits"
+              @deleted="onCommentDeleted"
             />
           </div>
           <h1 v-else style="text-align: center">Ooops! No post found!</h1>
@@ -48,7 +52,10 @@ import Post from "../components/Post.vue";
 import Comment from "../components/Comment.vue";
 import Navbar from "../components/Navbar.vue";
 import { getPost, getCommentsForPost, postCommentInPost } from "../api/postApi";
-const { getUsersSubreddits } = require("../api/subredditApi");
+const {
+  getUsersSubreddits,
+  getModeratedSubreddits,
+} = require("../api/subredditApi");
 import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import { getFromLocalStorage } from "../utlis/storage-utils";
 
@@ -64,7 +71,8 @@ export default {
       post: new Object(),
       comments: new Array(),
       commentInput: new String(),
-      usersSubreddits: new Array(),
+      usersSubreddits: [],
+      moderatedSubreddits: [],
     };
   },
   async mounted() {
@@ -74,7 +82,10 @@ export default {
     await getCommentsForPost(this.$route.params.postId).then(
       (res) => (this.comments = res.data)
     );
-    if (checkIfLoggedIn()) this.getUsersSubreddits();
+    if (checkIfLoggedIn()) {
+      this.getUsersSubreddits();
+      this.getModeratedSubreddits();
+    }
   },
   methods: {
     checkIfLoggedIn() {
@@ -100,6 +111,14 @@ export default {
           this.commentInput = "";
         })
         .catch((err) => console.log(err));
+    },
+    getModeratedSubreddits() {
+      getModeratedSubreddits()
+        .then((res) => (this.moderatedSubreddits = res.data))
+        .catch((err) => console.log(err));
+    },
+    onCommentDeleted(id) {
+      this.comments = this.comments.filter((comment) => comment.id !== id);
     },
   },
 };

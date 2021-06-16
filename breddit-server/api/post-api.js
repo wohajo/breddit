@@ -110,6 +110,14 @@ const postCommentInPost = async (postId, userId, content) => {
   return res.rows[0];
 };
 
+const removeComment = async (postId, commentId) => {
+  const res = await pool.query(
+    `DELETE FROM comment WHERE post_id = $1 AND id = $2`,
+    [postId, commentId]
+  );
+  return res.rows[0];
+};
+
 exports.addPost = addPost;
 exports.getPost = getPost;
 exports.getPosts = getPosts;
@@ -122,3 +130,4 @@ exports.getBestPosts = getBestPosts;
 exports.getBestPostsFromSubreddit = getBestPostsFromSubreddit;
 exports.getHotPosts = getHotPosts;
 exports.getHotPostsFromSubreddit = getHotPostsFromSubreddit;
+exports.removeComment = removeComment;

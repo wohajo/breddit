@@ -50,8 +50,7 @@
             <input
               class="form-control me-2"
               type="search"
-              placeholder="Search in subreddits"
-              aria-label="Search"
+              placeholder="Find subreddits"
             />
             <button class="btn btn-outline-primary" type="submit">
               Search
@@ -61,8 +60,7 @@
             <input
               class="form-control me-2"
               type="search"
-              placeholder="Search in posts"
-              aria-label="Search"
+              placeholder="Find posts"
             />
             <button class="btn btn-outline-primary" type="submit">
               Search

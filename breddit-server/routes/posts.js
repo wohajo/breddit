@@ -5,6 +5,7 @@ const {
   getPosts,
   getCommentsForPosts,
   postCommentInPost,
+  removeComment,
   getPostsFromSubreddit,
   getPageCountForAll,
   getPageCountForSubreddit,
@@ -21,6 +22,7 @@ const {
 const router = express.Router();
 const passport = require("passport");
 const multer = require("multer");
+const { getModBySubNameAndId } = require("../api/subreddit-api");
 
 // TODO restrict size
 const storage = multer.diskStorage({
@@ -197,6 +199,25 @@ router.post(
         console.log(err);
         res.status(500).json({ message: "Something went wrong" });
       });
+  }
+);
+
+router.delete(
+  "/:postId/comments/:commentId",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let token = req.headers.authorization;
+    const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
+    const modObj = await getModBySubNameAndId(req.query.subId, userIdToken);
+
+    if (modObj !== undefined)
+      await removeComment(req.params.postId, req.params.commentId)
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ message: "Something went wrong" });
+        });
+    else res.status(401).json({ message: "You are not a moderator" });
   }
 );
 

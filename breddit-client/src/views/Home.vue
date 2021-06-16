@@ -3,7 +3,7 @@
     <Navbar />
     <div class="container-sm">
       <div class="row justify-content-md-center">
-        <div class="col-md-6">
+        <div class="col-md-9">
           <div class="home">
             <div v-if="checkIfLoggedIn()" class="d-grid gap-2">
               <button
@@ -55,6 +55,7 @@
               :post="post"
               :key="post.post_id"
               :usersSubreddits="usersSubreddits"
+              :moderatedSubreddits="moderatedSubreddits"
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
           </div>
@@ -74,7 +75,10 @@ import Post from "@/components/Post";
 import { BIconPlusCircle } from "bootstrap-icons-vue";
 import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import Navbar from "../components/Navbar.vue";
-import { getUsersSubreddits } from "../api/subredditApi";
+import {
+  getModeratedSubreddits,
+  getUsersSubreddits,
+} from "../api/subredditApi";
 import Paginator from "../components/Paginator.vue";
 import {
   getPageCountForAll,
@@ -87,8 +91,9 @@ export default {
   name: "Home",
   data() {
     return {
-      posts: new Array(),
-      usersSubreddits: new Array(),
+      posts: [],
+      usersSubreddits: [],
+      moderatedSubreddits: [],
       pageCount: 0,
       newActive: true,
       hotActive: false,
@@ -121,6 +126,11 @@ export default {
     getUsersSubreddits() {
       getUsersSubreddits()
         .then((res) => (this.usersSubreddits = res.data))
+        .catch((err) => console.log(err));
+    },
+    getModeratedSubreddits() {
+      getModeratedSubreddits()
+        .then((res) => (this.moderatedSubreddits = res.data))
         .catch((err) => console.log(err));
     },
     onPageChanged(number) {
@@ -170,7 +180,10 @@ export default {
     getPageCountForAll().then(
       (res) => (this.pageCount = Number(res.data.page_count))
     );
-    if (checkIfLoggedIn()) this.getUsersSubreddits();
+    if (checkIfLoggedIn()) {
+      this.getUsersSubreddits();
+      this.getModeratedSubreddits();
+    }
   },
 };
 </script>

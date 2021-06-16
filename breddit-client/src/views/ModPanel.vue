@@ -3,7 +3,7 @@
     <Navbar />
     <div class="container-sm">
       <div class="row justify-content-md-center">
-        <div class="col-md-6">
+        <div class="col-md-9">
           <div class="ModPanel">
             <h1>Moderation panel</h1>
             <select

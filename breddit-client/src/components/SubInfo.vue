@@ -52,10 +52,9 @@ export default {
         undefined
       );
     },
+    // TODO fix count when leaving/joining in sub
     memberCount() {
-      return this.hasUserJoined
-        ? Number(this.subInfo.members_count)
-        : Number(this.subInfo.members_count) - 1;
+      return this.subInfo.members_count;
     },
   },
   methods: {

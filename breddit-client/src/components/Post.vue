@@ -39,6 +39,13 @@
       >
         <BIconChatText /> {{ post.comment_count }}
       </button>
+      <button
+        v-if="isModeratorOfThisSub"
+        type="button"
+        class="btn btn-delete btn-danger btn-sm"
+      >
+        <BIconXCircle /> delete
+      </button>
     </div>
     <img v-if="post.image_path !== null" v-bind:src="post.image_path" />
     <iframe
@@ -54,12 +61,14 @@
 </template>
 
 <script>
+// TODO restric not logged user from vote/joining
 import {
   BIconChevronDown,
   BIconChevronUp,
   BIconChatText,
   BIconPlusCircle,
   BIconCheck,
+  BIconXCircle,
 } from "bootstrap-icons-vue";
 import { joinSubreddit, leaveSubreddit } from "../api/subredditApi";
 import { getFromLocalStorage } from "../utlis/storage-utils";
@@ -83,6 +92,7 @@ export default {
       comment_count: Number,
     },
     usersSubreddits: Array,
+    moderatedSubreddits: Array,
   },
   components: {
     BIconChevronUp,
@@ -90,6 +100,7 @@ export default {
     BIconChatText,
     BIconPlusCircle,
     BIconCheck,
+    BIconXCircle,
   },
   data() {
     return {
@@ -104,6 +115,11 @@ export default {
       return (
         this.usersSubreddits.find(({ id }) => id === this.post.subreddit_id) !==
         undefined
+      );
+    },
+    isModeratorOfThisSub() {
+      return this.moderatedSubreddits.some(
+        (sub) => sub.subreddit_id === this.post.subreddit_id
       );
     },
   },
@@ -153,5 +169,9 @@ export default {
   span:hover {
     cursor: pointer;
   }
+}
+
+.btn-delete {
+  float: right;
 }
 </style>

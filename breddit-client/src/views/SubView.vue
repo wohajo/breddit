@@ -3,7 +3,7 @@
     <Navbar />
     <div class="container-sm">
       <div class="row justify-content-md-center">
-        <div class="col-md-6">
+        <div class="col-md-9">
           <SubInfo
             :subInfo="subInfo"
             :usersSubreddits="usersSubreddits"
@@ -24,6 +24,7 @@
             :key="post.post_id"
             :post="post"
             :usersSubreddits="usersSubreddits"
+            :moderatedSubreddits="moderatedSubreddits"
             @usersSubredditListChanged="onUsersSubredditListChanged"
           />
           <Paginator
@@ -38,7 +39,11 @@
 </template>
 
 <script>
-import { getSubreddit, getUsersSubreddits } from "../api/subredditApi";
+import {
+  getModeratedSubreddits,
+  getSubreddit,
+  getUsersSubreddits,
+} from "../api/subredditApi";
 import {
   getPostsFromSubreddit,
   getPageCountForSubreddit,
@@ -59,32 +64,42 @@ export default {
       posts: [],
       subDesc: "",
       usersSubreddits: [],
+      moderatedSubreddits: [],
       isFound: true,
       pageCount: 0,
       currentPage: 1,
     };
   },
   mounted() {
-    getSubreddit(this.$route.params.subredditName)
-      .then((res) => {
-        this.subInfo = res.data;
-        this.getPostsFromSubreddit(res.data.id, 1);
-        getPageCountForSubreddit(res.data.id).then(
-          (res) => (this.pageCount = Number(res.data.page_count))
-        );
-      })
-      .catch((err) => console.log(err));
-    this.getUsersSubreddits();
+    this.getSubreddit(this.$route.params.subredditName);
+    if (checkIfLoggedIn()) {
+      this.getUsersSubreddits();
+      this.getModeratedSubreddits();
+    }
   },
   methods: {
-    async getPostsFromSubreddit(subId, page) {
-      await getPostsFromSubreddit(subId, page).then(
-        (res) => (this.posts = res.data)
-      );
+    getSubreddit(subName) {
+      getSubreddit(subName)
+        .then((res) => {
+          this.subInfo = res.data;
+          this.getPostsFromSubreddit(res.data.id, 1);
+          getPageCountForSubreddit(res.data.id).then(
+            (res) => (this.pageCount = Number(res.data.page_count))
+          );
+        })
+        .catch((err) => console.log(err));
+    },
+    getPostsFromSubreddit(subId, page) {
+      getPostsFromSubreddit(subId, page).then((res) => (this.posts = res.data));
     },
     getUsersSubreddits() {
       getUsersSubreddits()
         .then((res) => (this.usersSubreddits = res.data))
+        .catch((err) => console.log(err));
+    },
+    getModeratedSubreddits() {
+      getModeratedSubreddits()
+        .then((res) => (this.moderatedSubreddits = res.data))
         .catch((err) => console.log(err));
     },
     checkIfLoggedIn() {

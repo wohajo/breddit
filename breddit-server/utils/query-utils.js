@@ -164,7 +164,7 @@ const getSubredditByNameQuery = () => {
           WHERE  sb.id = s.id
           GROUP  BY sb.id)
   END ) AS members_count
-  FROM SUBREDDIT s JOIN SUBREDDIT_USER su ON s.id = su.subreddit_id WHERE s.name = $1
+  FROM SUBREDDIT s WHERE s.name = $1
   GROUP BY s.id`;
 };
 
