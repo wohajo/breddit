@@ -6,12 +6,13 @@
         <div class="col-md-6">
           <div class="register">
             <h1>Register an account</h1>
-            <form>
+            <form @submit="onSubmit">
               <div class="form-floating mb-3">
                 <input
                   type="text"
                   class="form-control"
                   id="nickameInput"
+                  v-model="username"
                   placeholder="Nickname"
                   required
                 />
@@ -22,6 +23,7 @@
                   type="password"
                   class="form-control"
                   id="passwordInput"
+                  v-model="password"
                   placeholder="Password"
                   required
                 />
@@ -32,6 +34,7 @@
                   type="password"
                   class="form-control"
                   id="passwordConfirmInput"
+                  v-model="repeatPassword"
                   placeholder="Confirm password"
                   required
                 />
@@ -42,6 +45,7 @@
                   type="email"
                   class="form-control"
                   id="emailInput"
+                  v-model="email"
                   placeholder="Email"
                   required
                 />
@@ -52,6 +56,7 @@
                   type="email"
                   class="form-control"
                   id="emailConfirmInput"
+                  v-model="repeatEmail"
                   placeholder="Confirm email"
                   required
                 />
@@ -71,15 +76,46 @@
 </template>
 
 <script>
+import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import { checkIfTokenExpired, logOut } from "../utlis/jwt-utils";
 
 export default {
   name: "Register",
   components: { Navbar },
+  data() {
+    return {
+      username: "",
+      password: "",
+      repeatPassword: "",
+      email: "",
+      repeatEmail: "",
+    };
+  },
   mounted() {
     if (!checkIfTokenExpired()) this.$router.push("/");
     else logOut();
+  },
+  methods: {
+    onSubmit(event) {
+      event.preventDefault();
+      if (
+        this.email === this.repeatEmail &&
+        this.password === this.repeatPassword
+      )
+        axios
+          .post(`${process.env.VUE_APP_SERVER}/auth/register`, {
+            username: this.username,
+            password: this.password,
+            email: this.email,
+          })
+          .then(() => {
+            alert("Registered sucessfully!");
+            this.$router.push("/login");
+          })
+          .catch((err) => alert(err.response.data.message));
+      else alert("Passwords or emails do not match!");
+    },
   },
 };
 </script>

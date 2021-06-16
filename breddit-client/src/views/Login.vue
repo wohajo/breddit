@@ -75,7 +75,10 @@ export default {
           setInLocalStorage("token", res.data.token);
           this.$router.push("/");
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          if (err.response.status === 401) alert("Wrong credentials");
+          else alert("Something went wrong");
+        });
     },
   },
 };

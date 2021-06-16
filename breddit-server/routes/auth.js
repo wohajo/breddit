@@ -34,10 +34,21 @@ router.post("/register", async (req, res) => {
   const result = await pool.query("SELECT * FROM reddit_user");
 
   result.rows.forEach((user) => {
-    if (req.body.username === user.username || req.body.email === user.email) {
+    if (req.body.username === user.nickname || req.body.email === user.email) {
       error = { message: "User with this username or email already exists" };
     }
   });
+
+  if (
+    req.body.username === "" ||
+    req.body.email === "" ||
+    req.body.password === "" ||
+    !req.body.username ||
+    !req.body.email ||
+    !req.body.password
+  ) {
+    error = { message: "Form not complete" };
+  }
 
   if (!error) {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);

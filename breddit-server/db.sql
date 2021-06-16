@@ -17,12 +17,12 @@ CREATE TABLE IF NOT EXISTS reddit_user (
   email varchar(256) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS  role (
+CREATE TABLE IF NOT EXISTS role (
     id SERIAL PRIMARY KEY,
     role_name varchar(256) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS  user_role (
+CREATE TABLE IF NOT EXISTS user_role (
     id SERIAL PRIMARY KEY,
     user_id integer NOT NULL,
     role_id integer NOT NULL,
@@ -31,10 +31,10 @@ CREATE TABLE IF NOT EXISTS  user_role (
         REFERENCES reddit_user(id),  
     CONSTRAINT fk_user_role_role  
         FOREIGN KEY(role_id)   
-        REFERENCES role(id)   
+        REFERENCES role(id)
 );
 
-CREATE TABLE IF NOT EXISTS  subreddit (
+CREATE TABLE IF NOT EXISTS subreddit (
     id SERIAL PRIMARY KEY,
     name varchar(256) NOT NULL,
     description varchar(256) NOT NULL
@@ -46,10 +46,12 @@ CREATE TABLE IF NOT EXISTS  subreddit_moderator (
     subreddit_id integer NOT NULL,
     CONSTRAINT fk_subreddit_moderator_user  
         FOREIGN KEY(user_id)   
-        REFERENCES reddit_user(id),  
+        REFERENCES reddit_user(id)
+        ON DELETE CASCADE,  
     CONSTRAINT fk_subreddit_moderator_subreddit  
         FOREIGN KEY(subreddit_id)   
-        REFERENCES subreddit(id)   
+        REFERENCES subreddit(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS subreddit_user (
@@ -58,10 +60,12 @@ CREATE TABLE IF NOT EXISTS subreddit_user (
     subreddit_id integer NOT NULL,
     CONSTRAINT fk_subreddit_user_user  
         FOREIGN KEY(user_id)   
-        REFERENCES reddit_user(id),  
+        REFERENCES reddit_user(id)
+        ON DELETE CASCADE,  
     CONSTRAINT fk_subreddit_user_subreddit  
         FOREIGN KEY(subreddit_id)   
-        REFERENCES subreddit(id)   
+        REFERENCES subreddit(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS post (
@@ -75,10 +79,12 @@ CREATE TABLE IF NOT EXISTS post (
     user_id integer NOT NULL,
     CONSTRAINT fk_post_user 
         FOREIGN KEY(user_id)   
-        REFERENCES reddit_user(id),
+        REFERENCES reddit_user(id)
+        ON DELETE CASCADE,
     CONSTRAINT fk_post_subreddit
         FOREIGN KEY(subreddit_id)   
-        REFERENCES subreddit(id)   
+        REFERENCES subreddit(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS post_vote (
@@ -88,10 +94,12 @@ CREATE TABLE IF NOT EXISTS post_vote (
     post_id integer NOT NULL,
     CONSTRAINT fk_post_vote_user 
         FOREIGN KEY(user_id)   
-        REFERENCES reddit_user(id), 
+        REFERENCES reddit_user(id)
+        ON DELETE CASCADE, 
     CONSTRAINT fk_post_vote_post  
         FOREIGN KEY(post_id)   
-        REFERENCES post(id)   
+        REFERENCES post(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comment (
@@ -102,13 +110,16 @@ CREATE TABLE IF NOT EXISTS comment (
     post_id integer NOT NULL,
     CONSTRAINT fk_comment_user 
         FOREIGN KEY(user_id)   
-        REFERENCES reddit_user(id), 
+        REFERENCES reddit_user(id)
+        ON DELETE CASCADE, 
     CONSTRAINT fk_comment_parent_comment 
         FOREIGN KEY(parent_comment_id)   
-        REFERENCES comment(id),
+        REFERENCES comment(id)
+        ON DELETE CASCADE,
     CONSTRAINT fk_comment_post  
         FOREIGN KEY(post_id)   
-        REFERENCES post(id)   
+        REFERENCES post(id)
+        ON DELETE CASCADE
 );
 
 -- CREATE TABLE survey (

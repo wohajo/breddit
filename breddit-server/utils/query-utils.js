@@ -6,7 +6,12 @@ const addPostQuery = () => {
 const getPostQuery = () => {
   return `SELECT p.id as post_id, p.title, p.content, p.image_path, p.video_url,
   p.creation_date, p.user_id, ru.nickname as user_nickname, p.subreddit_id, s.name
-  as subreddit_name, (SELECT SUM (vote) FROM post_vote WHERE post_id = p.id) as votes,
+  as subreddit_name,
+  (
+    CASE WHEN (SELECT SUM (vote) FROM post_vote WHERE post_id = p.id) IS NULL THEN 0
+         ELSE (SELECT SUM (vote) FROM post_vote WHERE post_id = p.id)
+    END
+    ) as votes,
   (SELECT COUNT(c.id) FROM COMMENT c WHERE c.post_id = p.id) as comment_count
   FROM post p JOIN reddit_user ru on p.user_id = ru.id JOIN
   subreddit s on p.subreddit_id = s.id WHERE p.id = $1`;
