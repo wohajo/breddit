@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-sm sticky-top navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
     <div class="container-fluid">
       <router-link class="navbar-brand" to="/">Breddit</router-link>
       <button
@@ -18,6 +18,14 @@
           <li class="nav-item">
             <router-link class="nav-link active" aria-current="page" to="/"
               >Home</router-link
+            >
+          </li>
+          <li v-if="!this.checkIfTokenExpired()" class="nav-item">
+            <router-link
+              class="nav-link active"
+              aria-current="page"
+              to="/mycommunities"
+              >My communities</router-link
             >
           </li>
           <li v-if="!this.checkIfTokenExpired()" class="nav-item">

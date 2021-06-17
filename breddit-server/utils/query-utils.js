@@ -30,7 +30,7 @@ FROM post p JOIN reddit_user ru on p.user_id = ru.id JOIN
   subreddit s on p.subreddit_id = s.id ORDER BY "creation_date" DESC LIMIT $1 OFFSET $2`;
 };
 
-const getPostsFromUserSubsQuery = () => {
+const getPostsFromUserSubsBaseQuery = () => {
   return `
   SELECT p.id as post_id, p.title, p.content, p.image_path, p.video_url,
   p.creation_date, p.user_id, ru.nickname as user_nickname, p.subreddit_id, s.name
@@ -42,8 +42,26 @@ const getPostsFromUserSubsQuery = () => {
   (SELECT COUNT(c.id) FROM COMMENT c WHERE c.post_id = p.id) as comment_count
   FROM post p JOIN reddit_user ru on p.user_id = ru.id JOIN
   subreddit s on p.subreddit_id = s.id 
-  WHERE s.name in (SELECT s.name FROM subreddit s JOIN subreddit_user su ON s.id = su.subreddit_id WHERE su.user_id = $1) 
-  ORDER BY "creation_date"`;
+  WHERE s.name in (SELECT s.name FROM subreddit s JOIN subreddit_user su ON s.id = su.subreddit_id WHERE su.user_id = $1) `;
+};
+
+const getNewestPostsFromUserSubsQuery = () => {
+  return `${getPostsFromUserSubsBaseQuery()} ORDER BY "creation_date" LIMIT $2 OFFSET $3`;
+};
+
+const getBestPostsFromUserSubsQuery = () => {
+  return `${getPostsFromUserSubsBaseQuery()} ORDER BY votes DESC LIMIT $2 OFFSET $3`;
+};
+
+const getHotPostsFromUserSubsQuery = () => {
+  return `${getPostsFromUserSubsBaseQuery()} ORDER BY comment_count DESC LIMIT $2 OFFSET $3`;
+};
+
+const getPostCountFromUsersSubsQuery = () => {
+  return `SELECT ((COUNT(p.id)/10) + 1) as page_count
+  FROM post p JOIN reddit_user ru on p.user_id = ru.id JOIN
+  subreddit s on p.subreddit_id = s.id 
+  WHERE s.name in (SELECT s.name FROM subreddit s JOIN subreddit_user su ON s.id = su.subreddit_id WHERE su.user_id = $1)`;
 };
 
 const getHotPostsQuery = () => {
@@ -211,17 +229,26 @@ FROM   subreddit_moderator sm
 WHERE  user_id = $1`;
 };
 
-exports.getPostQuery = getPostQuery;
 exports.getAllSubredditsQuery = getAllSubredditsQuery;
 exports.getUsersSubredditsQuery = getUsersSubredditsQuery;
+
+exports.getPostQuery = getPostQuery;
 exports.addPostQuery = addPostQuery;
 exports.getPostsQuery = getPostsQuery;
+exports.getPostsFromSubredditQuery = getPostsFromSubredditQuery;
+
+exports.getSubredditByNameQuery = getSubredditByNameQuery;
+exports.getBestPostsFromSubredditQuery = getBestPostsFromSubredditQuery;
+exports.getModeratedSubredditsQuery = getModeratedSubredditsQuery;
+
 exports.getCommentsForPostsQuery = getCommentsForPostsQuery;
 exports.postCommentQuery = postCommentQuery;
-exports.getPostsFromSubredditQuery = getPostsFromSubredditQuery;
-exports.getSubredditByNameQuery = getSubredditByNameQuery;
-exports.getBestPostsQuery = getBestPostsQuery;
-exports.getBestPostsFromSubredditQuery = getBestPostsFromSubredditQuery;
-exports.getHotFromSubredditQuery = getHotFromSubredditQuery;
+
 exports.getHotPostsQuery = getHotPostsQuery;
-exports.getModeratedSubredditsQuery = getModeratedSubredditsQuery;
+exports.getBestPostsQuery = getBestPostsQuery;
+exports.getHotFromSubredditQuery = getHotFromSubredditQuery;
+
+exports.getNewestPostsFromUserSubsQuery = getNewestPostsFromUserSubsQuery;
+exports.getBestPostsFromUserSubsQuery = getBestPostsFromUserSubsQuery;
+exports.getHotPostsFromUserSubsQuery = getHotPostsFromUserSubsQuery;
+exports.getPostCountFromUsersSubsQuery = getPostCountFromUsersSubsQuery;

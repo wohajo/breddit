@@ -131,9 +131,11 @@ export default {
 </script>
 
 <style lang="scss">
-.card-body {
-  button {
-    float: right;
+.sub-info {
+  .card-body {
+    button {
+      float: right;
+    }
   }
 }
 </style>

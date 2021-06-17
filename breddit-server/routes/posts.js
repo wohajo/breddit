@@ -12,7 +12,6 @@ const {
   getBestPosts,
   getBestPostsFromSubreddit,
   getHotPosts,
-  getHotPostsFromSubreddit,
   removePost,
 } = require("../api/post-api");
 const {
@@ -149,17 +148,17 @@ router.get("/subreddit/:subId/best", async (req, res) => {
     });
 });
 
-router.get("/subreddit/:subId/hot", async (req, res) => {
-  let limit = 10;
-  let offset = req.query.page - 1 || 0;
+// router.get("/subreddit/:subId/hot", async (req, res) => {
+//   let limit = 10;
+//   let offset = req.query.page - 1 || 0;
 
-  await getHotPostsFromSubreddit(req.params.subId, limit, offset * 10)
-    .then((result) => res.status(200).json(result))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
-    });
-});
+//   await getHotPostsFromSubreddit(req.params.subId, limit, offset * 10)
+//     .then((result) => res.status(200).json(result))
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({ message: "Something went wrong" });
+//     });
+// });
 
 router.get("/subreddit/:subId/pageCount", async (req, res) => {
   await getPageCountForSubreddit(req.params.subId)

@@ -35,7 +35,6 @@ export default {
     },
     nextPage() {
       if (this.currentPage < this.pageCount) {
-        console.log(this.currentPage, this.pageCount);
         this.$emit("pageChanged", 1);
         window.scrollTo(0, 0);
       }

@@ -61,3 +61,39 @@ export const getPageCountForSubreddit = (subId) =>
 
 export const getPageCountForAll = () =>
   axios.get(`${process.env.VUE_APP_SERVER}/posts/pageCount`);
+
+export const getPageCountForUserCommunities = (token) =>
+  axios.get(
+    `${process.env.VUE_APP_SERVER}/users/mycommunites/pageCount`,
+    axiosConfig(token)
+  );
+
+export const getPostsForUserCommunities = (pageNumber, token) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/users/mycommunites/new`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      page: pageNumber,
+    },
+  });
+
+export const getBestPostsForUserCommunities = (pageNumber, token) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/users/mycommunites/best`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      page: pageNumber,
+    },
+  });
+
+export const getHotPostsForUserCommunities = (pageNumber, token) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/users/mycommunites/hot`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      page: pageNumber,
+    },
+  });

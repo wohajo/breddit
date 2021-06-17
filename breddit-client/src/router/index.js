@@ -8,12 +8,18 @@ import SubView from "../views/SubView.vue";
 import CreateSub from "../views/CreateSub.vue";
 import Profile from "../views/Profile.vue";
 import ModPanel from "../views/ModPanel.vue";
+import MyCommunities from "../views/MyCommunities.vue";
 
 const routes = [
   {
     path: "/",
     name: "Home",
     component: Home,
+  },
+  {
+    path: "/mycommunities",
+    name: "MyCommunities",
+    component: MyCommunities,
   },
   {
     path: "/submit",
