@@ -19,7 +19,7 @@
                   :key="subreddit.id"
                   v-bind:value="subreddit.id"
                 >
-                  b/{{ subreddit.name }} ({{ subreddit.members_count }} members)
+                  r/{{ subreddit.name }} ({{ subreddit.members_count }} members)
                 </option>
               </select>
               <div class="form-floating mb-3">

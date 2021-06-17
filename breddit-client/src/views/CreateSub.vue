@@ -67,7 +67,7 @@ export default {
           this.description,
           getFromLocalStorage("token")
         )
-          .then(() => this.$router.push(`/b/${this.name}`))
+          .then(() => this.$router.push(`/r/${this.name}`))
           .catch((err) => alert(err.data.message));
       else alert("You must log in in order to do this");
     },

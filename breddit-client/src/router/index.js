@@ -36,7 +36,7 @@ const routes = [
     component: PostView,
   },
   {
-    path: "/b/:subredditName",
+    path: "/r/:subredditName",
     name: "Subreddit",
     component: SubView,
   },

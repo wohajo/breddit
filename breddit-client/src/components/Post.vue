@@ -2,8 +2,8 @@
   <div class="card text-white bg-dark">
     <div class="card-header">
       Posted by u/{{ this.post.user_nickname }} in
-      <span @click="this.$router.push(`/b/${this.post.subreddit_name}`)"
-        >b/{{ this.post.subreddit_name }}</span
+      <span @click="this.$router.push(`/r/${this.post.subreddit_name}`)"
+        >r/{{ this.post.subreddit_name }}</span
       >
       <button
         v-if="!hasUserJoined"
@@ -40,7 +40,7 @@
         <BIconChatText /> {{ post.comment_count }}
       </button>
       <button
-        v-if="isModeratorOfThisSub"
+        v-if="isModeratorOfThisSub && hasUserJoined"
         type="button"
         class="btn btn-delete btn-danger btn-sm"
         @click="deletePost"

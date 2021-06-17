@@ -91,6 +91,15 @@ const getModeratedSubreddits = async (userId) => {
   return res.rows;
 };
 
+const updateSubDescription = async (newDesc, subId) => {
+  const res = await pool.query(
+    `UPDATE subreddit SET description = $1 WHERE id = $2`,
+    [newDesc, subId]
+  );
+
+  return res.rows[0];
+};
+
 exports.removeUserFromSubreddit = removeUserFromSubreddit;
 exports.joinUserToSubreddit = joinUserToSubreddit;
 exports.getUsersSubreddits = getUsersSubreddits;
@@ -102,3 +111,4 @@ exports.getModeratedSubreddits = getModeratedSubreddits;
 exports.getSubModerators = getSubModerators;
 exports.removeSubModerator = removeSubModerator;
 exports.getModBySubNameAndId = getModBySubNameAndId;
+exports.updateSubDescription = updateSubDescription;

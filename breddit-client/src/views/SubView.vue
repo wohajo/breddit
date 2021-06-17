@@ -7,7 +7,9 @@
           <SubInfo
             :subInfo="subInfo"
             :usersSubreddits="usersSubreddits"
+            :moderatedSubreddits="moderatedSubreddits"
             @usersSubredditListChanged="onUsersSubredditListChanged"
+            @descEdited="onDescEdited"
           />
           <div v-if="checkIfLoggedIn() && hasUserJoined()" class="d-grid gap-2">
             <button
@@ -108,6 +110,7 @@ export default {
     },
     onUsersSubredditListChanged() {
       this.getUsersSubreddits();
+      this.getSubreddit(this.$route.params.subredditName);
     },
     hasUserJoined() {
       return (
@@ -124,6 +127,9 @@ export default {
       getPageCountForSubreddit(this.subInfo.id).then(
         (res) => (this.pageCount = Number(res.data.page_count))
       );
+    },
+    onDescEdited() {
+      this.getSubreddit(this.$route.params.subredditName);
     },
   },
 };
