@@ -54,21 +54,27 @@
           >
             Posts
           </button>
-          <form v-if="searchInPosts" class="d-flex">
+          <form
+            v-if="searchInPosts"
+            @submit="onSearchSubreddits"
+            class="d-flex"
+          >
             <input
               class="form-control me-2"
               type="search"
               placeholder="Find subreddits"
+              v-model="searchQuery"
             />
             <button class="btn btn-outline-primary" type="submit">
               Search
             </button>
           </form>
-          <form v-else class="d-flex">
+          <form v-else class="d-flex" @submit="onSearchPosts">
             <input
               class="form-control me-2"
               type="search"
               placeholder="Find posts"
+              v-model="searchQuery"
             />
             <button class="btn btn-outline-primary" type="submit">
               Search
@@ -151,6 +157,7 @@ export default {
   data() {
     return {
       searchInPosts: true,
+      searchQuery: "",
     };
   },
   methods: {
@@ -168,6 +175,13 @@ export default {
     },
     switchSearch() {
       this.searchInPosts = !this.searchInPosts;
+    },
+    onSearchSubreddits() {
+      console.log(`LOOKING FOR SUB: ${this.searchQuery}`);
+      this.$router.push(`/subreddits/search/${this.searchQuery}`);
+    },
+    onSearchPosts() {
+      console.log(`LOOKING FOR POST: ${this.searchQuery}`);
     },
   },
 };

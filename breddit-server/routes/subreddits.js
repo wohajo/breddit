@@ -13,6 +13,7 @@ const {
   getModBySubNameAndId,
   removeSubModerator,
   updateSubDescription,
+  getSubsWithNameLike,
 } = require("../api/subreddit-api");
 const {
   getUserIdFromToken,
@@ -76,6 +77,15 @@ router.put(
 
 router.get("/:subId/moderators", async (req, res) => {
   await getSubModerators(req.params.subId)
+    .then((result) => res.status(200).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json("Something went wrong");
+    });
+});
+
+router.get("/search/:query", async (req, res) => {
+  await getSubsWithNameLike(req.params.query)
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);

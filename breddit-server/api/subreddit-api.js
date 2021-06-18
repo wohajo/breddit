@@ -4,6 +4,7 @@ const {
   getUsersSubredditsQuery,
   getSubredditByNameQuery,
   getModeratedSubredditsQuery,
+  getSubredditsWhereNameLikeQuery,
 } = require("../utils/query-utils");
 
 const getAllSubreddits = async () => {
@@ -100,6 +101,13 @@ const updateSubDescription = async (newDesc, subId) => {
   return res.rows[0];
 };
 
+const getSubsWithNameLike = async (searchQuery) => {
+  const res = await pool.query(getSubredditsWhereNameLikeQuery(), [
+    `%${searchQuery}%`,
+  ]);
+  return res.rows;
+};
+
 exports.removeUserFromSubreddit = removeUserFromSubreddit;
 exports.joinUserToSubreddit = joinUserToSubreddit;
 exports.getUsersSubreddits = getUsersSubreddits;
@@ -112,3 +120,4 @@ exports.getSubModerators = getSubModerators;
 exports.removeSubModerator = removeSubModerator;
 exports.getModBySubNameAndId = getModBySubNameAndId;
 exports.updateSubDescription = updateSubDescription;
+exports.getSubsWithNameLike = getSubsWithNameLike;

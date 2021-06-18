@@ -2,7 +2,9 @@
   <div class="info-wrapper card text-white bg-dark">
     <div class="card-body">
       <div class="sub-info">
-        <h3>{{ subInfo.name }}</h3>
+        <h3 class="title-link" @click="this.$router.push(`/r/${subInfo.name}`)">
+          {{ subInfo.name }}
+        </h3>
         <button
           v-if="!hasUserJoined"
           @click="join"
@@ -136,6 +138,9 @@ export default {
     button {
       float: right;
     }
+  }
+  .title-link {
+    cursor: pointer;
   }
 }
 </style>

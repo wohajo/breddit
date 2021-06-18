@@ -57,3 +57,6 @@ export const addMod = (subId, userId, token) =>
     {},
     axiosConfig(token)
   );
+
+export const searchSubreddits = (query) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/subreddits/search/${query}`);

@@ -229,6 +229,25 @@ FROM   subreddit_moderator sm
 WHERE  user_id = $1`;
 };
 
+const getSubredditsWhereNameLikeQuery = () => {
+  return `SELECT s.id, s.name, s.description,
+  ( CASE
+    WHEN (SELECT Count(sb.id)
+          FROM   subreddit sb
+                 JOIN subreddit_user sub
+                   ON sb.id = sub.subreddit_id
+          WHERE  sb.id = s.id
+          GROUP  BY sb.id) IS NULL THEN 0
+    ELSE (SELECT Count(sb.id)
+          FROM   subreddit sb
+                 JOIN subreddit_user sub
+                   ON sb.id = sub.subreddit_id
+          WHERE  sb.id = s.id
+          GROUP  BY sb.id)
+  END ) AS members_count
+  FROM SUBREDDIT s WHERE name LIKE $1`;
+};
+
 exports.getAllSubredditsQuery = getAllSubredditsQuery;
 exports.getUsersSubredditsQuery = getUsersSubredditsQuery;
 
@@ -240,6 +259,7 @@ exports.getPostsFromSubredditQuery = getPostsFromSubredditQuery;
 exports.getSubredditByNameQuery = getSubredditByNameQuery;
 exports.getBestPostsFromSubredditQuery = getBestPostsFromSubredditQuery;
 exports.getModeratedSubredditsQuery = getModeratedSubredditsQuery;
+exports.getSubredditsWhereNameLikeQuery = getSubredditsWhereNameLikeQuery;
 
 exports.getCommentsForPostsQuery = getCommentsForPostsQuery;
 exports.postCommentQuery = postCommentQuery;

@@ -9,6 +9,8 @@ import CreateSub from "../views/CreateSub.vue";
 import Profile from "../views/Profile.vue";
 import ModPanel from "../views/ModPanel.vue";
 import MyCommunities from "../views/MyCommunities.vue";
+import SearchPosts from "../views/SearchPosts";
+import SearchSubreddits from "../views/SearchSubreddits";
 
 const routes = [
   {
@@ -60,6 +62,16 @@ const routes = [
     path: "/modPanel",
     name: "modPanel",
     component: ModPanel,
+  },
+  {
+    path: "/posts/search/:query",
+    name: "SearchPosts",
+    component: SearchPosts,
+  },
+  {
+    path: "/subreddits/search/:query",
+    name: "SearchSubreddits",
+    component: SearchSubreddits,
   },
 ];
 
