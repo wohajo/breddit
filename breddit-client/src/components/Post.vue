@@ -95,6 +95,7 @@ export default {
     },
     usersSubreddits: Array,
     moderatedSubreddits: Array,
+    socket: Object,
   },
   components: {
     BIconChevronUp,
@@ -155,6 +156,7 @@ export default {
         .then(() => {
           alert("removed sucessfully");
           this.$emit("deleted", this.post.post_id);
+          this.socket.emit("deletePost", this.post.post_id);
         })
         .catch((err) => console.log(err.response.data));
     },

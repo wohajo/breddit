@@ -57,6 +57,7 @@
               :usersSubreddits="usersSubreddits"
               :moderatedSubreddits="moderatedSubreddits"
               @deleted="onPostDeleted"
+              :socket="socket"
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
           </div>
@@ -102,6 +103,7 @@ export default {
       hotActive: false,
       bestActive: false,
       currentPage: 1,
+      socket: {},
     };
   },
   components: {
@@ -139,7 +141,6 @@ export default {
     },
     onPostDeleted(id) {
       this.removePostFromArray(id);
-      this.socket.emit("deletePost", id);
     },
     checkIfLoggedIn() {
       return checkIfLoggedIn();

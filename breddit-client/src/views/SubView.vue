@@ -29,6 +29,7 @@
             :moderatedSubreddits="moderatedSubreddits"
             @deleted="onPostDeleted"
             @usersSubredditListChanged="onUsersSubredditListChanged"
+            :socket="socket"
           />
           <Paginator
             :pageCount="pageCount"
@@ -73,6 +74,7 @@ export default {
       isFound: true,
       pageCount: 0,
       currentPage: 1,
+      socket: {},
     };
   },
   created() {
@@ -133,7 +135,6 @@ export default {
     },
     onPostDeleted(id) {
       this.removePostFromArray(id);
-      this.socket.emit("deletePost", id);
     },
     onPageChanged(number) {
       this.currentPage = this.currentPage + number;

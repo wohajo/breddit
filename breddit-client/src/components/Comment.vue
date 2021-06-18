@@ -38,6 +38,7 @@ export default {
     },
     subreddit_id: Number,
     moderatedSubreddits: Array,
+    socket: Object,
   },
   computed: {
     isModeratorOfThisSub() {
@@ -58,7 +59,14 @@ export default {
             params: { subId: this.subreddit_id },
           }
         )
-        .then(() => alert("removed sucessfully"))
+        .then(() => {
+          this.socket.emit(
+            "deleteComment",
+            this.comment.post_id,
+            this.comment.id
+          );
+          alert("removed sucessfully");
+        })
         .catch((err) => console.log(err.response.data));
       this.$emit("deleted", this.comment.id);
     },

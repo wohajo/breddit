@@ -11,6 +11,7 @@
               :usersSubreddits="usersSubreddits"
               :moderatedSubreddits="moderatedSubreddits"
               @deleted="onPostDeleted"
+              :socket="socket"
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
             <form v-if="checkIfLoggedIn()" @submit="handleSendComment">
@@ -36,6 +37,7 @@
               :subreddit_id="post.subreddit_id"
               :moderatedSubreddits="moderatedSubreddits"
               @deleted="onCommentDeleted"
+              :socket="socket"
             />
           </div>
           <h1 v-else style="text-align: center">Ooops! No post found!</h1>
@@ -105,7 +107,6 @@ export default {
   },
   methods: {
     onPostDeleted() {
-      this.socket.emit("deletePost", this.post.post_id);
       alert("Post was deleted");
       this.$router.push("/");
     },
@@ -141,7 +142,6 @@ export default {
     },
     onCommentDeleted(id) {
       this.deleteCommentFromArray(id);
-      this.socket.emit("deleteComment", this.post.post_id, id);
     },
     deleteCommentFromArray(id) {
       this.comments = this.comments.filter((comment) => comment.id !== id);
