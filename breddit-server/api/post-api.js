@@ -171,6 +171,37 @@ const removePost = async (postId) => {
   return res.rows[0];
 };
 
+const getVotesForPost = async (postId) => {
+  const res = await pool.query(`SELECT * FROM post_vote WHERE post_id = $1`, [
+    postId,
+  ]);
+  return res.rows;
+};
+
+const voteDownForPost = async (postId, userId) => {
+  const res = await pool.query(
+    `INSERT INTO post_vote (vote, user_id, post_id) VALUES(-1, $1, $2) RETURNING *`,
+    [userId, postId]
+  );
+  return res.rows;
+};
+
+const voteUpForPost = async (postId, userId) => {
+  const res = await pool.query(
+    `INSERT INTO post_vote (vote, user_id, post_id) VALUES(1, $1, $2) RETURNING *`,
+    [userId, postId]
+  );
+  return res.rows;
+};
+
+const deleteVoteFromPost = async (postId, userId) => {
+  const res = await pool.query(
+    `DELETE FROM post_vote WHERE post_id = $1 AND user_id = $2`,
+    [postId, userId]
+  );
+  return res.rows;
+};
+
 exports.addPost = addPost;
 exports.getPost = getPost;
 exports.getPosts = getPosts;
@@ -188,6 +219,11 @@ exports.getHotPosts = getHotPosts;
 exports.getHotPostsFromSubreddit = getHotPostsFromSubreddit;
 exports.removeComment = removeComment;
 exports.removePost = removePost;
+
+exports.getVotesForPost = getVotesForPost;
+exports.voteDownForPost = voteDownForPost;
+exports.voteUpForPost = voteUpForPost;
+exports.deleteVoteFromPost = deleteVoteFromPost;
 
 exports.getHotPostsForUser = getHotPostsForUser;
 exports.getNewPostsForUser = getNewPostsForUser;

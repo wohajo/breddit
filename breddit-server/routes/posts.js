@@ -15,6 +15,10 @@ const {
   removePost,
   getPostsWithContentLike,
   getPostsWithTitleLike,
+  getVotesForPost,
+  voteDownForPost,
+  voteUpForPost,
+  deleteVoteFromPost,
 } = require("../api/post-api");
 const {
   getUserIdFromToken,
@@ -202,6 +206,68 @@ router.get("/:postId/comments", async (req, res) => {
       res.status(500).json("Something went wrong");
     });
 });
+
+router.get("/:postId/votes", async (req, res) => {
+  await getVotesForPost(req.params.postId)
+    .then((result) => res.status(200).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json("Something went wrong");
+    });
+});
+
+router.post(
+  "/:postId/votes/up",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let token = req.headers.authorization;
+    const userId = getUserIdFromToken(extractTokenFromHeader(token));
+    await deleteVoteFromPost(req.params.postId, userId).catch((err) => {
+      console.log(err);
+      res.status(500).json("Something went wrong");
+    });
+    await voteUpForPost(req.params.postId, userId)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
+  }
+);
+
+router.post(
+  "/:postId/votes/down",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let token = req.headers.authorization;
+    const userId = getUserIdFromToken(extractTokenFromHeader(token));
+    await deleteVoteFromPost(req.params.postId, userId).catch((err) => {
+      console.log(err);
+      res.status(500).json("Something went wrong");
+    });
+    await voteDownForPost(req.params.postId, userId)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
+  }
+);
+
+router.delete(
+  "/:postId/votes",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let token = req.headers.authorization;
+    const userId = getUserIdFromToken(extractTokenFromHeader(token));
+    await deleteVoteFromPost(req.params.postId, userId)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
+  }
+);
 
 router.post(
   "/:postId/comments",

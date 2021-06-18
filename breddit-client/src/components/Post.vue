@@ -30,11 +30,37 @@
       <p class="card-text">
         <small class="text-muted">{{ formattedDate }}</small>
       </p>
-      <button type="button" class="btn btn-sm btn-outline-success">
+      <button
+        v-if="hasUserVotedUp"
+        type="button"
+        class="btn btn-sm btn-success"
+        @click="deleteVote"
+      >
         <BIconChevronUp />
       </button>
-      {{ post.votes }}
-      <button type="button" class="btn btn-sm btn-outline-danger">
+      <button
+        v-else
+        type="button"
+        @click="voteUp"
+        class="btn btn-sm btn-outline-success"
+      >
+        <BIconChevronUp />
+      </button>
+      {{ votesCount }}
+      <button
+        v-if="hasUserVotedDown"
+        type="button"
+        class="btn btn-sm btn-danger"
+        @click="deleteVote"
+      >
+        <BIconChevronDown />
+      </button>
+      <button
+        v-else
+        type="button"
+        @click="voteDown"
+        class="btn btn-sm btn-outline-danger"
+      >
         <BIconChevronDown />
       </button>
       <button
@@ -77,8 +103,13 @@ import {
   BIconXCircle,
 } from "bootstrap-icons-vue";
 import { joinSubreddit, leaveSubreddit } from "../api/subredditApi";
-import { getFromLocalStorage } from "../utlis/storage-utils";
+import {
+  getFromLocalStorage,
+  getObjectFromLocalStorage,
+  isInLocalStorage,
+} from "../utlis/storage-utils";
 import axios from "axios";
+import { axiosConfig } from "../utlis/jwt-utils";
 
 export default {
   name: "Post",
@@ -111,8 +142,12 @@ export default {
   },
   data() {
     return {
-      videoUrl: "",
+      votesDownloaded: [],
+      votesCount: 0,
     };
+  },
+  mounted() {
+    this.getVotes();
   },
   computed: {
     formattedDate() {
@@ -129,8 +164,71 @@ export default {
         (sub) => sub.subreddit_id === this.post.subreddit_id
       );
     },
+    hasUserVotedUp() {
+      if (!isInLocalStorage("user")) return false;
+      return this.votesDownloaded.some(
+        (vote) =>
+          vote.user_id === getObjectFromLocalStorage("user").id &&
+          vote.vote === 1
+      );
+    },
+    hasUserVotedDown() {
+      if (!isInLocalStorage("user")) return false;
+      return this.votesDownloaded.some(
+        (vote) =>
+          vote.user_id === getObjectFromLocalStorage("user").id &&
+          vote.vote === -1
+      );
+    },
   },
   methods: {
+    getVotes() {
+      axios
+        .get(`${process.env.VUE_APP_SERVER}/posts/${this.post.post_id}/votes`)
+        .then((res) => {
+          this.votesDownloaded = res.data;
+          this.votesCount = this.votesDownloaded.reduce(
+            (acc, curr) => (acc = acc + curr.vote),
+            0
+          );
+        })
+        .catch((err) => alert(err.response.data));
+    },
+    voteUp() {
+      axios
+        .post(
+          `${process.env.VUE_APP_SERVER}/posts/${this.post.post_id}/votes/up`,
+          {},
+          axiosConfig(getFromLocalStorage("token"))
+        )
+        .then(() => {
+          this.getVotes();
+        })
+        .catch((err) => alert(err.response.data));
+    },
+    voteDown() {
+      axios
+        .post(
+          `${process.env.VUE_APP_SERVER}/posts/${this.post.post_id}/votes/down`,
+          {},
+          axiosConfig(getFromLocalStorage("token"))
+        )
+        .then(() => {
+          this.getVotes();
+        })
+        .catch((err) => alert(err.response.data));
+    },
+    deleteVote() {
+      axios
+        .delete(
+          `${process.env.VUE_APP_SERVER}/posts/${this.post.post_id}/votes`,
+          axiosConfig(getFromLocalStorage("token"))
+        )
+        .then(() => {
+          this.getVotes();
+        })
+        .catch((err) => alert(err.response.data));
+    },
     join() {
       joinSubreddit(this.post.subreddit_id, getFromLocalStorage("token"))
         .then(() => {

@@ -130,7 +130,6 @@ export default {
     },
     onFileChange(event) {
       this.file = event.target.files[0];
-      console.log(this.file);
     },
   },
 };
