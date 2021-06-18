@@ -79,6 +79,7 @@
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import { checkIfTokenExpired, logOut } from "../utlis/jwt-utils";
+const EMAIL_REGEX = `\\w*[@]\\w*[.]\\w*`;
 
 export default {
   name: "Register",
@@ -99,7 +100,8 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault();
-      if (
+      if (!this.email.match(EMAIL_REGEX)) alert("Wrong email!");
+      else if (
         this.email === this.repeatEmail &&
         this.password === this.repeatPassword
       )
