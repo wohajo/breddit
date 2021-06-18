@@ -46,7 +46,7 @@ const getPostsFromUserSubsBaseQuery = () => {
 };
 
 const getNewestPostsFromUserSubsQuery = () => {
-  return `${getPostsFromUserSubsBaseQuery()} ORDER BY "creation_date" LIMIT $2 OFFSET $3`;
+  return `${getPostsFromUserSubsBaseQuery()} ORDER BY "creation_date" DESC LIMIT $2 OFFSET $3`;
 };
 
 const getBestPostsFromUserSubsQuery = () => {
