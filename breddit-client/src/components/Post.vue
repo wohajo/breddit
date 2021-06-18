@@ -156,7 +156,7 @@ export default {
           alert("removed sucessfully");
           this.$emit("deleted", this.post.post_id);
         })
-        .catch((err) => console.log(err.response.data.message));
+        .catch((err) => console.log(err.response.data));
     },
   },
 };

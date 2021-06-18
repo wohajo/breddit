@@ -35,7 +35,7 @@ router.post("/register", async (req, res) => {
 
   result.rows.forEach((user) => {
     if (req.body.username === user.nickname || req.body.email === user.email) {
-      error = { message: "User with this username or email already exists" };
+      error = "User with this username or email already exists";
     }
   });
 
@@ -47,7 +47,7 @@ router.post("/register", async (req, res) => {
     !req.body.email ||
     !req.body.password
   ) {
-    error = { message: "Form not complete" };
+    error = "Form not complete";
   }
 
   if (!error) {

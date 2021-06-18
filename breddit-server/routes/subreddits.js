@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -35,15 +35,13 @@ router.get(
     let token = req.headers.authorization;
     const userId = getUserIdFromToken(extractTokenFromHeader(token));
     if (userId !== Number(req.params.userId))
-      res
-        .status(401)
-        .json({ message: "User not authorized to perform this action" });
+      res.status(401).json("User not authorized to perform this action");
     else
       await getUsersSubreddits(req.params.userId)
         .then((result) => res.status(200).json(result))
         .catch((err) => {
           console.log(err);
-          res.status(500).json({ message: "Something went wrong" });
+          res.status(500).json("Something went wrong");
         });
   }
 );
@@ -53,7 +51,7 @@ router.get("/:subName", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -70,9 +68,9 @@ router.put(
         .then((result) => res.status(200).json(result))
         .catch((err) => {
           console.log(err);
-          res.status(500).json({ message: "Something went wrong" });
+          res.status(500).json("Something went wrong");
         });
-    else res.status(401).json({ message: "You are not a moderator" });
+    else res.status(401).json("You are not a moderator");
   }
 );
 
@@ -81,7 +79,7 @@ router.get("/:subId/moderators", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -103,13 +101,13 @@ router.post(
           .then((result) => res.status(200).json(result))
           .catch((err) => {
             console.log(err);
-            res.status(500).json({ message: "Something went wrong" });
+            res.status(500).json("Something went wrong");
           });
       } else {
-        res.status(403).json({ message: "User is already a moderator" });
+        res.status(403).json("User is already a moderator");
       }
     } else {
-      res.status(401).json({ message: "You are not a moderator" });
+      res.status(401).json("You are not a moderator");
     }
   }
 );
@@ -127,9 +125,9 @@ router.delete(
         .then((result) => res.status(200).json(result))
         .catch((err) => {
           console.log(err);
-          res.status(500).json({ message: "Something went wrong" });
+          res.status(500).json("Something went wrong");
         });
-    else res.status(401).json({ message: "You are not a moderator" });
+    else res.status(401).json("You are not a moderator");
   }
 );
 
@@ -144,7 +142,7 @@ router.post(
       .then((result) => res.status(200).json(result))
       .catch((err) => {
         console.log(err);
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json("Something went wrong");
       });
   }
 );
@@ -158,14 +156,14 @@ router.delete(
 
     await removeSubModerator(userId, req.params.subredditId).catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 
     await removeUserFromSubreddit(req.params.subredditId, userId)
       .then((result) => res.status(200).json(result))
       .catch((err) => {
         console.log(err);
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json("Something went wrong");
       });
   }
 );
@@ -178,11 +176,9 @@ router.post(
     let token = req.headers.authorization;
     const userId = getUserIdFromToken(extractTokenFromHeader(token));
     if ((await getSubredditByName(req.body.name)) !== undefined)
-      res.status(409).json({ message: "This subreddit already exists" });
+      res.status(409).json("This subreddit already exists");
     else if (req.body.name.length === 0 || req.body.description.length === 0)
-      res
-        .status(403)
-        .json({ message: "You must provide name and description" });
+      res.status(403).json("You must provide name and description");
     else {
       await createSubreddit(req.body.name, req.body.description)
         .then((result) => {
@@ -193,7 +189,7 @@ router.post(
         .then(() => res.status(200).json(subObject))
         .catch((err) => {
           console.log(err);
-          res.status(500).json({ message: "Something went wrong" });
+          res.status(500).json("Something went wrong");
         });
     }
   }

@@ -113,7 +113,7 @@ export default {
             alert("Registered sucessfully!");
             this.$router.push("/login");
           })
-          .catch((err) => alert(err.response.data.message));
+          .catch((err) => alert(err.response.data));
       else alert("Passwords or emails do not match!");
     },
   },

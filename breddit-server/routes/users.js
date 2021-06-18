@@ -25,7 +25,7 @@ router.post(
       !req.body.newPassword ||
       !req.body.userId
     )
-      res.status(400).json({ message: "Missing new password or user ID" });
+      res.status(400).json("Missing new password or user ID");
     else {
       const newHashedPassword = await bcrypt.hash(req.body.newPassword, 10);
       const userId = req.body.userId;
@@ -33,7 +33,7 @@ router.post(
         newHashedPassword,
         userId,
       ]);
-      res.status(200).json({ message: "Password changed" });
+      res.status(200).json("Password changed");
     }
   }
 );
@@ -43,7 +43,7 @@ router.get("/search/:searchQuery", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -57,7 +57,7 @@ router.get(
       .then((result) => res.status(200).json(result))
       .catch((err) => {
         console.log(err);
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json("Something went wrong");
       });
   }
 );
@@ -75,7 +75,7 @@ router.get(
       .then((result) => res.status(200).json(result))
       .catch((err) => {
         console.log(err);
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json("Something went wrong");
       });
   }
 );
@@ -93,7 +93,7 @@ router.get(
       .then((result) => res.status(200).json(result))
       .catch((err) => {
         console.log(err);
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json("Something went wrong");
       });
   }
 );
@@ -111,7 +111,7 @@ router.get(
       .then((result) => res.status(200).json(result))
       .catch((err) => {
         console.log(err);
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json("Something went wrong");
       });
   }
 );
@@ -127,7 +127,7 @@ router.get(
       .then((result) => res.status(200).json(result))
       .catch((err) => {
         console.log(err);
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json("Something went wrong");
       });
   }
 );

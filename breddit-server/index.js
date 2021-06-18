@@ -15,6 +15,17 @@ const io = require("socket.io")(http, {
 });
 io.sockets.on("connection", (socket) => {
   console.log(`user with id ${socket.id}`);
+
+  socket.on("join", (postId) => {
+    socket.join(`room${postId}`);
+  });
+  socket.on("deletePost", (postId) => io.emit("postDeleted", postId));
+  socket.on("deleteComment", (postId, commentId) =>
+    io.to(`room${postId}`).emit("commentDeleted", commentId)
+  );
+  socket.on("addComment", (postId, comment) =>
+    io.to(`room${postId}`).emit("commentAdded", comment)
+  );
 });
 
 // server

@@ -81,6 +81,7 @@ import {
   getUsersSubreddits,
 } from "../api/subredditApi";
 import Paginator from "../components/Paginator.vue";
+import io from "socket.io-client";
 import {
   getPageCountForAll,
   getPosts,
@@ -108,7 +109,15 @@ export default {
     Navbar,
     Paginator,
   },
+  created() {
+    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
+      transports: ["websocket"],
+    });
+  },
   methods: {
+    removePostFromArray(id) {
+      this.posts = this.posts.filter((post) => post.post_id !== id);
+    },
     async getPosts(pageNumber) {
       await getPosts(pageNumber).then((res) => (this.posts = res.data));
     },
@@ -119,7 +128,8 @@ export default {
       await getHotPosts(pageNumber).then((res) => (this.posts = res.data));
     },
     onPostDeleted(id) {
-      this.posts = this.posts.filter((post) => post.post_id !== id);
+      this.removePostFromArray(id);
+      this.socket.emit("deletePost", id);
     },
     checkIfLoggedIn() {
       return checkIfLoggedIn();
@@ -188,6 +198,9 @@ export default {
       this.getUsersSubreddits();
       this.getModeratedSubreddits();
     }
+    this.socket.on("postDeleted", (id) => {
+      this.removePostFromArray(id);
+    });
   },
 };
 </script>

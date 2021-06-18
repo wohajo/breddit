@@ -88,6 +88,7 @@ import {
   getBestPostsForUserCommunities,
 } from "../api/postApi";
 import { getFromLocalStorage } from "../utlis/storage-utils";
+import io from "socket.io-client";
 
 export default {
   name: "MyCommunities",
@@ -109,7 +110,15 @@ export default {
     Navbar,
     Paginator,
   },
+  created() {
+    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
+      transports: ["websocket"],
+    });
+  },
   methods: {
+    removePostFromArray(id) {
+      this.posts = this.posts.filter((post) => post.post_id !== id);
+    },
     async getPosts(pageNumber) {
       await getPostsForUserCommunities(
         pageNumber,
@@ -129,7 +138,8 @@ export default {
       ).then((res) => (this.posts = res.data));
     },
     onPostDeleted(id) {
-      this.posts = this.posts.filter((post) => post.post_id !== id);
+      this.removePostFromArray(id);
+      this.socket.emit("deletePost", id);
     },
     checkIfLoggedIn() {
       return checkIfLoggedIn();
@@ -202,6 +212,9 @@ export default {
       );
       this.getUsersSubreddits();
       this.getModeratedSubreddits();
+      this.socket.on("postDeleted", (id) => {
+        this.removePostFromArray(id);
+      });
     } else this.$router.push("/");
   },
 };

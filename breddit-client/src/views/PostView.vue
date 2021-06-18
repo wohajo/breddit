@@ -6,17 +6,14 @@
         <div class="col-md-9">
           <div v-if="Object.keys(post).length !== 0" class="post-view">
             <Post
-              key="post.id"
+              key="post.post_id"
               :post="post"
               :usersSubreddits="usersSubreddits"
               :moderatedSubreddits="moderatedSubreddits"
               @deleted="onPostDeleted"
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
-            <form
-              v-if="this.checkIfLoggedIn()"
-              @submit="this.handleSendComment"
-            >
+            <form v-if="checkIfLoggedIn()" @submit="handleSendComment">
               <div class="mb-3">
                 <textarea
                   class="form-control"
@@ -57,6 +54,7 @@ const {
   getUsersSubreddits,
   getModeratedSubreddits,
 } = require("../api/subredditApi");
+import io from "socket.io-client";
 import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import { getFromLocalStorage } from "../utlis/storage-utils";
 
@@ -74,22 +72,41 @@ export default {
       commentInput: new String(),
       usersSubreddits: [],
       moderatedSubreddits: [],
+      socket: {},
     };
   },
-  async mounted() {
-    await getPost(this.$route.params.postId).then(
-      (res) => (this.post = res.data)
-    );
-    await getCommentsForPost(this.$route.params.postId).then(
+  created() {
+    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
+      transports: ["websocket"],
+    });
+  },
+  mounted() {
+    getPost(this.$route.params.postId).then((res) => (this.post = res.data));
+    getCommentsForPost(this.$route.params.postId).then(
       (res) => (this.comments = res.data)
     );
     if (checkIfLoggedIn()) {
       this.getUsersSubreddits();
       this.getModeratedSubreddits();
     }
+    this.socket.emit("join", this.$route.params.postId);
+
+    this.socket.on("postDeleted", () => {
+      this.onPostDeleted();
+    });
+    this.socket.on("commentDeleted", (id) => this.deleteCommentFromArray(id));
+    this.socket.on("commentAdded", (comment) => {
+      if (!this.comments.some((c) => c.id === comment.id))
+        this.comments.push(comment);
+    });
+  },
+  unmounted() {
+    this.socket.disconnect();
   },
   methods: {
     onPostDeleted() {
+      this.socket.emit("deletePost", this.post.post_id);
+      alert("Post was deleted");
       this.$router.push("/");
     },
     checkIfLoggedIn() {
@@ -113,8 +130,9 @@ export default {
         .then((res) => {
           this.comments.push(res.data);
           this.commentInput = "";
+          this.socket.emit("addComment", this.post.post_id, res.data);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err.response.data));
     },
     getModeratedSubreddits() {
       getModeratedSubreddits()
@@ -122,6 +140,10 @@ export default {
         .catch((err) => console.log(err));
     },
     onCommentDeleted(id) {
+      this.deleteCommentFromArray(id);
+      this.socket.emit("deleteComment", this.post.post_id, id);
+    },
+    deleteCommentFromArray(id) {
       this.comments = this.comments.filter((comment) => comment.id !== id);
     },
   },

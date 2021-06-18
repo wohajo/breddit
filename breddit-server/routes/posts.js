@@ -58,7 +58,7 @@ router.post(
         .then((result) => res.status(200).json(result))
         .catch((err) => {
           console.log(err);
-          res.status(500).json({ message: "Something went wrong" });
+          res.status(500).json("Something went wrong");
         });
     } else {
       await addPost(
@@ -73,7 +73,7 @@ router.post(
         .then((result) => res.status(200).json(result))
         .catch((err) => {
           console.log(err);
-          res.status(500).json({ message: "Something went wrong" });
+          res.status(500).json("Something went wrong");
         });
     }
   }
@@ -87,7 +87,7 @@ router.get("/", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -99,7 +99,7 @@ router.get("/best", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -111,7 +111,7 @@ router.get("/hot", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -120,7 +120,7 @@ router.get("/pageCount", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -132,7 +132,7 @@ router.get("/subreddit/:subId", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -144,28 +144,16 @@ router.get("/subreddit/:subId/best", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
-
-// router.get("/subreddit/:subId/hot", async (req, res) => {
-//   let limit = 10;
-//   let offset = req.query.page - 1 || 0;
-
-//   await getHotPostsFromSubreddit(req.params.subId, limit, offset * 10)
-//     .then((result) => res.status(200).json(result))
-//     .catch((err) => {
-//       console.log(err);
-//       res.status(500).json({ message: "Something went wrong" });
-//     });
-// });
 
 router.get("/subreddit/:subId/pageCount", async (req, res) => {
   await getPageCountForSubreddit(req.params.subId)
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -174,7 +162,7 @@ router.get("/:postId", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -183,7 +171,7 @@ router.get("/:postId/comments", async (req, res) => {
     .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json("Something went wrong");
     });
 });
 
@@ -193,12 +181,15 @@ router.post(
   async (req, res) => {
     let token = req.headers.authorization;
     const userId = getUserIdFromToken(extractTokenFromHeader(token));
-    await postCommentInPost(req.params.postId, userId, req.body.content)
-      .then((result) => res.status(200).json(result))
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json({ message: "Something went wrong" });
-      });
+    if (req.body.content.length === 0)
+      res.status(400).json("Comment cannot be empty");
+    else
+      await postCommentInPost(req.params.postId, userId, req.body.content)
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json("Something went wrong");
+        });
   }
 );
 
@@ -215,9 +206,9 @@ router.delete(
         .then((result) => res.status(200).json(result))
         .catch((err) => {
           console.log(err);
-          res.status(500).json({ message: "Something went wrong" });
+          res.status(500).json("Something went wrong");
         });
-    else res.status(401).json({ message: "You are not a moderator" });
+    else res.status(401).json("You are not a moderator");
   }
 );
 
@@ -234,9 +225,9 @@ router.delete(
         .then((result) => res.status(200).json(result))
         .catch((err) => {
           console.log(err);
-          res.status(500).json({ message: "Something went wrong" });
+          res.status(500).json("Something went wrong");
         });
-    else res.status(401).json({ message: "You are not a moderator" });
+    else res.status(401).json("You are not a moderator");
   }
 );
 

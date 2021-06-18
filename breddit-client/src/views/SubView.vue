@@ -42,6 +42,7 @@
 </template>
 
 <script>
+// TODO socket for posts
 import {
   getModeratedSubreddits,
   getSubreddit,
@@ -57,6 +58,7 @@ import Post from "../components/Post.vue";
 import Paginator from "../components/Paginator.vue";
 import SubInfo from "../components/SubInfo.vue";
 import { BIconPlusCircle } from "bootstrap-icons-vue";
+import io from "socket.io-client";
 
 export default {
   components: { Navbar, Post, Paginator, BIconPlusCircle, SubInfo },
@@ -73,14 +75,25 @@ export default {
       currentPage: 1,
     };
   },
+  created() {
+    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
+      transports: ["websocket"],
+    });
+  },
   mounted() {
     this.getSubreddit(this.$route.params.subredditName);
     if (checkIfLoggedIn()) {
       this.getUsersSubreddits();
       this.getModeratedSubreddits();
     }
+    this.socket.on("postDeleted", (id) => {
+      this.removePostFromArray(id);
+    });
   },
   methods: {
+    removePostFromArray(id) {
+      this.posts = this.posts.filter((post) => post.post_id !== id);
+    },
     getSubreddit(subName) {
       getSubreddit(subName)
         .then((res) => {
@@ -119,7 +132,8 @@ export default {
       );
     },
     onPostDeleted(id) {
-      this.posts = this.posts.filter((post) => post.post_id !== id);
+      this.removePostFromArray(id);
+      this.socket.emit("deletePost", id);
     },
     onPageChanged(number) {
       this.currentPage = this.currentPage + number;
