@@ -16,6 +16,16 @@
               <button class="btn btn-outline-primary" type="submit">
                 Search
               </button>
+              <button
+                v-if="titleSearch"
+                class="btn btn-primary"
+                @click="switchTitleSearch"
+              >
+                title
+              </button>
+              <button v-else class="btn btn-warning" @click="switchTitleSearch">
+                contents
+              </button>
             </form>
             <Post
               v-for="post in posts"
@@ -43,7 +53,7 @@ import {
   getModeratedSubreddits,
   getUsersSubreddits,
 } from "../api/subredditApi";
-import { searchPosts } from "../api/postApi";
+import { searchPostsByContents, searchPostsByTitle } from "../api/postApi";
 
 export default {
   name: "SearchPosts",
@@ -55,6 +65,7 @@ export default {
       moderatedSubreddits: [],
       usersSubreddits: [],
       socket: {},
+      titleSearch: true,
     };
   },
   components: {
@@ -80,17 +91,30 @@ export default {
     this.socket.close();
   },
   methods: {
+    switchTitleSearch() {
+      this.titleSearch = !this.titleSearch;
+    },
     removePostFromArray(id) {
       this.posts = this.posts.filter((post) => post.post_id !== id);
     },
     searchPosts() {
-      if (this.query !== "" && this.query !== " ")
-        searchPosts(this.query)
-          .then((res) => {
-            this.resText = this.query;
-            this.posts = res.data;
-          })
-          .catch((err) => console.log(err));
+      if (this.query !== "" && this.query !== " ") {
+        if (this.titleSearch) {
+          searchPostsByTitle(this.query)
+            .then((res) => {
+              this.resText = this.query;
+              this.posts = res.data;
+            })
+            .catch((err) => console.log(err));
+        } else {
+          searchPostsByContents(this.query)
+            .then((res) => {
+              this.resText = this.query;
+              this.posts = res.data;
+            })
+            .catch((err) => console.log(err));
+        }
+      }
     },
     getUsersSubreddits() {
       getUsersSubreddits()
@@ -116,6 +140,9 @@ export default {
 .search-posts {
   form {
     margin-bottom: 10px;
+    .btn-outline-primary {
+      margin-right: 5px;
+    }
   }
 }
 </style>

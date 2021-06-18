@@ -14,6 +14,7 @@ const {
   getHotPosts,
   removePost,
   getPostsWithContentLike,
+  getPostsWithTitleLike,
 } = require("../api/post-api");
 const {
   getUserIdFromToken,
@@ -92,11 +93,23 @@ router.get("/", async (req, res) => {
     });
 });
 
-router.get("/search/:query", async (req, res) => {
+router.get("/search/contents/:query", async (req, res) => {
   if (req.params.query === "" || req.params.query === " ")
     res.status(400).json("Wrong query");
   else
     await getPostsWithContentLike(req.params.query)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
+});
+
+router.get("/search/title/:query", async (req, res) => {
+  if (req.params.query === "" || req.params.query === " ")
+    res.status(400).json("Wrong query");
+  else
+    await getPostsWithTitleLike(req.params.query)
       .then((result) => res.status(200).json(result))
       .catch((err) => {
         console.log(err);

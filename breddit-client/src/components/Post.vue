@@ -138,7 +138,7 @@ export default {
           this.$emit("usersSubredditListChanged");
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data);
         });
     },
     leave() {
@@ -147,7 +147,7 @@ export default {
           this.$emit("usersSubredditListChanged");
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data);
         });
     },
     deletePost() {

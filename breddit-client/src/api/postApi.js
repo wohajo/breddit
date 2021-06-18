@@ -98,5 +98,8 @@ export const getHotPostsForUserCommunities = (pageNumber, token) =>
     },
   });
 
-export const searchPosts = (query) =>
-  axios.get(`${process.env.VUE_APP_SERVER}/posts/search/${query}`);
+export const searchPostsByContents = (query) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/posts/search/contents/${query}`);
+
+export const searchPostsByTitle = (query) =>
+  axios.get(`${process.env.VUE_APP_SERVER}/posts/search/title/${query}`);

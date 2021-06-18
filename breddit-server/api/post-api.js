@@ -15,6 +15,7 @@ const {
   getHotPostsFromUserSubsQuery,
   getPostCountFromUsersSubsQuery,
   getPostsWithContentLikeQuery,
+  getPostsWithTitleLikeQuery,
 } = require("../utils/query-utils");
 
 const getPosts = async (limit, offset) => {
@@ -24,6 +25,11 @@ const getPosts = async (limit, offset) => {
 
 const getPostsWithContentLike = async (query) => {
   const res = await pool.query(getPostsWithContentLikeQuery(), [`%${query}%`]);
+  return res.rows;
+};
+
+const getPostsWithTitleLike = async (query) => {
+  const res = await pool.query(getPostsWithTitleLikeQuery(), [`%${query}%`]);
   return res.rows;
 };
 
@@ -169,6 +175,7 @@ exports.addPost = addPost;
 exports.getPost = getPost;
 exports.getPosts = getPosts;
 exports.getPostsWithContentLike = getPostsWithContentLike;
+exports.getPostsWithTitleLike = getPostsWithTitleLike;
 
 exports.getCommentsForPosts = getCommentsForPosts;
 exports.postCommentInPost = postCommentInPost;
