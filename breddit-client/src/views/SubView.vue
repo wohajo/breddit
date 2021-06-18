@@ -43,7 +43,6 @@
 </template>
 
 <script>
-// TODO socket for posts
 import {
   getModeratedSubreddits,
   getSubreddit,

@@ -84,7 +84,6 @@ export default {
   name: "Post",
   props: {
     post: {
-      // TODO change post_id to id and user_nickname to nickname
       post_id: Number,
       title: String,
       content: String,

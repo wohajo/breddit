@@ -177,11 +177,9 @@ export default {
       this.searchInPosts = !this.searchInPosts;
     },
     onSearchSubreddits() {
-      console.log(`LOOKING FOR SUB: ${this.searchQuery}`);
       this.$router.push(`/subreddits/search/${this.searchQuery}`);
     },
     onSearchPosts() {
-      console.log(`LOOKING FOR POST: ${this.searchQuery}`);
       this.$router.push(`/posts/search/${this.searchQuery}`);
     },
   },

@@ -25,8 +25,8 @@ const router = express.Router();
 const passport = require("passport");
 const multer = require("multer");
 const { getModBySubNameAndId } = require("../api/subreddit-api");
+const { isUserAlreadyInSub } = require("../utils/api-utils");
 
-// TODO restrict size
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploaded");
@@ -42,12 +42,14 @@ router.post(
   upload.single("image"),
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    // TODO restrict if user is in sub
     let token = req.headers.authorization;
     const userId = getUserIdFromToken(extractTokenFromHeader(token));
     const f = req.file || null;
+    const isInSub = await isUserAlreadyInSub(userId, req.body.subreddit_id);
 
-    if (f === null) {
+    if (!isInSub) {
+      res.status(400).json("User not in subreddit");
+    } else if (f === null) {
       await addPost(
         req.body.title,
         req.body.content,

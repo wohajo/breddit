@@ -105,7 +105,7 @@ export default {
     getUsersSubreddits() {
       getUsersSubreddits()
         .then((res) => (this.subredditList = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     onSubmit(event) {
       event.preventDefault();
@@ -122,10 +122,10 @@ export default {
         if (this.file !== "") form.append("image", this.file);
         if (this.videoUrl.length > 0) form.append("video_url", this.videoUrl);
 
-        // TODO error handling
         axios
           .post(`${process.env.VUE_APP_SERVER}/posts`, form, config)
-          .then((res) => this.$router.push(`/post/${res.data.id}`));
+          .then((res) => this.$router.push(`/post/${res.data.id}`))
+          .catch((err) => alert(err.response.data));
       }
     },
     onFileChange(event) {

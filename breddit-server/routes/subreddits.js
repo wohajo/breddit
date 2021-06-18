@@ -19,6 +19,7 @@ const {
   getUserIdFromToken,
   extractTokenFromHeader,
 } = require("../utils/jwt-utils");
+const { isUserAlreadyInSub } = require("../utils/api-utils");
 
 router.get("/", async (req, res) => {
   await getAllSubreddits()
@@ -150,13 +151,16 @@ router.post(
   async (req, res) => {
     let token = req.headers.authorization;
     const userId = getUserIdFromToken(extractTokenFromHeader(token));
-    // TODO prevent from multiple joining
-    await joinUserToSubreddit(req.params.subredditId, userId)
-      .then((result) => res.status(200).json(result))
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json("Something went wrong");
-      });
+    const isInSub = await isUserAlreadyInSub(userId, req.params.subredditId);
+
+    if (isInSub) res.status(400).json("User already in subreddit");
+    else
+      await joinUserToSubreddit(req.params.subredditId, userId)
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json("Something went wrong");
+        });
   }
 );
 
