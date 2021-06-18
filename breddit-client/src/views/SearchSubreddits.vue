@@ -5,7 +5,7 @@
       <div class="row justify-content-md-center">
         <div class="col-md-9">
           <div class="search-subreddits">
-            <h3>Results for "{{ resText }}"</h3>
+            <h3>Subreddit results for "{{ resText }}"</h3>
             <form class="d-flex" @submit="searchSubreddits">
               <input
                 class="form-control me-2"
@@ -64,6 +64,7 @@ export default {
   methods: {
     onUsersSubredditListChanged() {
       this.getUsersSubreddits();
+      this.searchSubreddits(this.query);
     },
     getUsersSubreddits() {
       getUsersSubreddits()
@@ -76,12 +77,13 @@ export default {
         .catch((err) => console.log(err));
     },
     searchSubreddits() {
-      searchSubreddits(this.query)
-        .then((res) => {
-          this.resText = this.query;
-          this.subreddits = res.data;
-        })
-        .catch((err) => console.log(err));
+      if (this.query !== "" && this.query !== " ")
+        searchSubreddits(this.query)
+          .then((res) => {
+            this.resText = this.query;
+            this.subreddits = res.data;
+          })
+          .catch((err) => console.log(err));
     },
     onDescEdited() {
       this.searchSubreddits();

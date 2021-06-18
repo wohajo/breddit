@@ -85,12 +85,15 @@ router.get("/:subId/moderators", async (req, res) => {
 });
 
 router.get("/search/:query", async (req, res) => {
-  await getSubsWithNameLike(req.params.query)
-    .then((result) => res.status(200).json(result))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
+  if (req.params.query === "" || req.params.query === " ")
+    res.status(400).json("Wrong query");
+  else
+    await getSubsWithNameLike(req.params.query)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
 });
 
 router.post(

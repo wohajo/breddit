@@ -13,6 +13,7 @@ const {
   getBestPostsFromSubreddit,
   getHotPosts,
   removePost,
+  getPostsWithContentLike,
 } = require("../api/post-api");
 const {
   getUserIdFromToken,
@@ -89,6 +90,18 @@ router.get("/", async (req, res) => {
       console.log(err);
       res.status(500).json("Something went wrong");
     });
+});
+
+router.get("/search/:query", async (req, res) => {
+  if (req.params.query === "" || req.params.query === " ")
+    res.status(400).json("Wrong query");
+  else
+    await getPostsWithContentLike(req.params.query)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
 });
 
 router.get("/best", async (req, res) => {

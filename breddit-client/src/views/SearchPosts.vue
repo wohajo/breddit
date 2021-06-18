@@ -4,7 +4,30 @@
     <div class="container-sm">
       <div class="row justify-content-md-center">
         <div class="col-md-9">
-          <div class="search-posts"></div>
+          <div class="search-posts">
+            <h3>Post results for "{{ resText }}"</h3>
+            <form class="d-flex" @submit="searchPosts">
+              <input
+                class="form-control me-2"
+                type="search"
+                placeholder="Find subreddits"
+                v-model="query"
+              />
+              <button class="btn btn-outline-primary" type="submit">
+                Search
+              </button>
+            </form>
+            <Post
+              v-for="post in posts"
+              :post="post"
+              :key="post.post_id"
+              :usersSubreddits="usersSubreddits"
+              :moderatedSubreddits="moderatedSubreddits"
+              :socket="socket"
+              @usersSubredditListChanged="onUsersSubredditListChanged"
+              @deleted="onPostDeleted"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -12,9 +35,87 @@
 </template>
 
 <script>
+import io from "socket.io-client";
+import Post from "@/components/Post";
+import Navbar from "@/components/Navbar";
+import { checkIfLoggedIn } from "../utlis/jwt-utils";
+import {
+  getModeratedSubreddits,
+  getUsersSubreddits,
+} from "../api/subredditApi";
+import { searchPosts } from "../api/postApi";
+
 export default {
   name: "SearchPosts",
+  data() {
+    return {
+      query: this.$route.params.query,
+      resText: this.$route.params.query,
+      posts: [],
+      moderatedSubreddits: [],
+      usersSubreddits: [],
+      socket: {},
+    };
+  },
+  components: {
+    Post,
+    Navbar,
+  },
+  created() {
+    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
+      transports: ["websocket"],
+    });
+  },
+  mounted() {
+    this.searchPosts();
+    if (checkIfLoggedIn()) {
+      this.getUsersSubreddits();
+      this.getModeratedSubreddits();
+    }
+    this.socket.on("postDeleted", (id) => {
+      this.removePostFromArray(id);
+    });
+  },
+  unmounted() {
+    this.socket.close();
+  },
+  methods: {
+    removePostFromArray(id) {
+      this.posts = this.posts.filter((post) => post.post_id !== id);
+    },
+    searchPosts() {
+      if (this.query !== "" && this.query !== " ")
+        searchPosts(this.query)
+          .then((res) => {
+            this.resText = this.query;
+            this.posts = res.data;
+          })
+          .catch((err) => console.log(err));
+    },
+    getUsersSubreddits() {
+      getUsersSubreddits()
+        .then((res) => (this.usersSubreddits = res.data))
+        .catch((err) => console.log(err));
+    },
+    getModeratedSubreddits() {
+      getModeratedSubreddits()
+        .then((res) => (this.moderatedSubreddits = res.data))
+        .catch((err) => console.log(err));
+    },
+    onUsersSubredditListChanged() {
+      this.getUsersSubreddits();
+    },
+    onPostDeleted(id) {
+      this.removePostFromArray(id);
+    },
+  },
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.search-posts {
+  form {
+    margin-bottom: 10px;
+  }
+}
+</style>

@@ -182,6 +182,7 @@ export default {
     },
     onSearchPosts() {
       console.log(`LOOKING FOR POST: ${this.searchQuery}`);
+      this.$router.push(`/posts/search/${this.searchQuery}`);
     },
   },
 };

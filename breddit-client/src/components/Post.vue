@@ -18,7 +18,12 @@
       </button>
     </div>
     <div class="card-body">
-      <h5 class="card-title">{{ post.title }}</h5>
+      <h5
+        class="card-title"
+        @click="this.$router.push(`/post/${this.post.post_id}`)"
+      >
+        {{ post.title }}
+      </h5>
       <p class="card-text">
         {{ post.content }}
       </p>
@@ -176,6 +181,9 @@ export default {
   }
   .btn-comments {
     float: right;
+  }
+  .card-title {
+    cursor: pointer;
   }
 }
 

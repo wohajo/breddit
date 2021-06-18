@@ -14,10 +14,16 @@ const {
   getBestPostsFromUserSubsQuery,
   getHotPostsFromUserSubsQuery,
   getPostCountFromUsersSubsQuery,
+  getPostsWithContentLikeQuery,
 } = require("../utils/query-utils");
 
 const getPosts = async (limit, offset) => {
   const res = await pool.query(getPostsQuery(), [limit, offset]);
+  return res.rows;
+};
+
+const getPostsWithContentLike = async (query) => {
+  const res = await pool.query(getPostsWithContentLikeQuery(), [`%${query}%`]);
   return res.rows;
 };
 
@@ -162,6 +168,8 @@ const removePost = async (postId) => {
 exports.addPost = addPost;
 exports.getPost = getPost;
 exports.getPosts = getPosts;
+exports.getPostsWithContentLike = getPostsWithContentLike;
+
 exports.getCommentsForPosts = getCommentsForPosts;
 exports.postCommentInPost = postCommentInPost;
 exports.getPostsFromSubreddit = getPostsFromSubreddit;
