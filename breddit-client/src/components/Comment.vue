@@ -67,7 +67,7 @@ export default {
           );
           alert("removed sucessfully");
         })
-        .catch((err) => console.log(err.response.data));
+        .catch((err) => alert(err.response.data));
       this.$emit("deleted", this.comment.id);
     },
   },

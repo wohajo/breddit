@@ -105,26 +105,26 @@ export default {
               this.resText = this.query;
               this.posts = res.data;
             })
-            .catch((err) => console.log(err));
+            .catch((err) => alert(err.response.data));
         } else {
           searchPostsByContents(this.query)
             .then((res) => {
               this.resText = this.query;
               this.posts = res.data;
             })
-            .catch((err) => console.log(err));
+            .catch((err) => alert(err.response.data));
         }
       }
     },
     getUsersSubreddits() {
       getUsersSubreddits()
         .then((res) => (this.usersSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     getModeratedSubreddits() {
       getModeratedSubreddits()
         .then((res) => (this.moderatedSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     onUsersSubredditListChanged() {
       this.getUsersSubreddits();

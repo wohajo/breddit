@@ -69,12 +69,12 @@ export default {
     getUsersSubreddits() {
       getUsersSubreddits()
         .then((res) => (this.usersSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     getModeratedSubreddits() {
       getModeratedSubreddits()
         .then((res) => (this.moderatedSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     searchSubreddits() {
       if (this.query !== "" && this.query !== " ")
@@ -83,7 +83,7 @@ export default {
             this.resText = this.query;
             this.subreddits = res.data;
           })
-          .catch((err) => console.log(err));
+          .catch((err) => alert(err.response.data));
     },
     onDescEdited() {
       this.searchSubreddits();

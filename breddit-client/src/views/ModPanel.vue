@@ -111,14 +111,16 @@ export default {
   },
   methods: {
     getModeratedSubreddits() {
-      getModeratedSubreddits().then((res) => (this.subredditList = res.data));
+      getModeratedSubreddits()
+        .then((res) => (this.subredditList = res.data))
+        .catch((err) => alert(err.response.data));
     },
     getSubredditMods() {
       if (this.selected === -1) this.modsList = [];
       else
-        getSubModerators(this.selected).then(
-          (res) => (this.modsList = res.data)
-        );
+        getSubModerators(this.selected)
+          .then((res) => (this.modsList = res.data))
+          .catch((err) => alert(err.response.data));
     },
     getUsers(event) {
       event.preventDefault();
@@ -127,7 +129,8 @@ export default {
           .get(
             `${process.env.VUE_APP_SERVER}/users/search/${this.nicknameInput}`
           )
-          .then((res) => (this.usersList = res.data));
+          .then((res) => (this.usersList = res.data))
+          .catch((err) => alert(err.response.data));
     },
     removeMod(id) {
       removeMod(this.selected, id, getFromLocalStorage("token"))
@@ -140,13 +143,13 @@ export default {
             this.modsList = [];
           } else this.modsList = this.modsList.filter((mod) => mod.id !== id);
         })
-        .catch((err) => console.log(err.response));
+        .catch((err) => alert(err.response.data));
     },
     addMod(id, nickname) {
       if (this.selected !== -1)
         addMod(this.selected, id, getFromLocalStorage("token"))
           .then(this.modsList.push({ id: id, nickname: nickname }))
-          .catch((err) => console.log(err.response));
+          .catch((err) => alert(err.response.data));
     },
   },
   mounted() {

@@ -96,18 +96,14 @@ export default {
         .then(() => {
           this.$emit("usersSubredditListChanged");
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => alert(err.response.data));
     },
     leave() {
       leaveSubreddit(this.subInfo.id, getFromLocalStorage("token"))
         .then(() => {
           this.$emit("usersSubredditListChanged");
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => alert(err.response.data));
     },
     edit() {
       this.isEditButtonClicked = !this.isEditButtonClicked;
@@ -125,7 +121,7 @@ export default {
             axiosConfig(getFromLocalStorage("token"))
           )
           .then(() => this.$emit("descEdited"))
-          .catch((err) => console.log(err));
+          .catch((err) => alert(err.response.data));
       this.isEditButtonClicked = !this.isEditButtonClicked;
     },
   },

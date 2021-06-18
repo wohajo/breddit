@@ -104,20 +104,22 @@ export default {
             (res) => (this.pageCount = Number(res.data.page_count))
           );
         })
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     getPostsFromSubreddit(subId, page) {
-      getPostsFromSubreddit(subId, page).then((res) => (this.posts = res.data));
+      getPostsFromSubreddit(subId, page)
+        .then((res) => (this.posts = res.data))
+        .catch((err) => alert(err.response.data));
     },
     getUsersSubreddits() {
       getUsersSubreddits()
         .then((res) => (this.usersSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     getModeratedSubreddits() {
       getModeratedSubreddits()
         .then((res) => (this.moderatedSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     checkIfLoggedIn() {
       return checkIfLoggedIn();
@@ -138,9 +140,9 @@ export default {
     onPageChanged(number) {
       this.currentPage = this.currentPage + number;
       this.getPostsFromSubreddit(this.subInfo.id, this.currentPage);
-      getPageCountForSubreddit(this.subInfo.id).then(
-        (res) => (this.pageCount = Number(res.data.page_count))
-      );
+      getPageCountForSubreddit(this.subInfo.id)
+        .then((res) => (this.pageCount = Number(res.data.page_count)))
+        .catch((err) => alert(err.response.data));
     },
     onDescEdited() {
       this.getSubreddit(this.$route.params.subredditName);

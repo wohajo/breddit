@@ -83,10 +83,12 @@ export default {
     });
   },
   mounted() {
-    getPost(this.$route.params.postId).then((res) => (this.post = res.data));
-    getCommentsForPost(this.$route.params.postId).then(
-      (res) => (this.comments = res.data)
-    );
+    getPost(this.$route.params.postId)
+      .then((res) => (this.post = res.data))
+      .catch((err) => alert(err.response.data));
+    getCommentsForPost(this.$route.params.postId)
+      .then((res) => (this.comments = res.data))
+      .catch((err) => alert(err.response.data));
     if (checkIfLoggedIn()) {
       this.getUsersSubreddits();
       this.getModeratedSubreddits();
@@ -116,7 +118,7 @@ export default {
     getUsersSubreddits() {
       getUsersSubreddits()
         .then((res) => (this.usersSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     onUsersSubredditListChanged() {
       this.getUsersSubreddits();
@@ -138,7 +140,7 @@ export default {
     getModeratedSubreddits() {
       getModeratedSubreddits()
         .then((res) => (this.moderatedSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     onCommentDeleted(id) {
       this.deleteCommentFromArray(id);

@@ -121,13 +121,19 @@ export default {
       this.posts = this.posts.filter((post) => post.post_id !== id);
     },
     async getPosts(pageNumber) {
-      await getPosts(pageNumber).then((res) => (this.posts = res.data));
+      await getPosts(pageNumber)
+        .then((res) => (this.posts = res.data))
+        .catch((err) => alert(err.response.data));
     },
     async getBestPosts(pageNumber) {
-      await getBestPosts(pageNumber).then((res) => (this.posts = res.data));
+      await getBestPosts(pageNumber)
+        .then((res) => (this.posts = res.data))
+        .catch((err) => alert(err.response.data));
     },
     async getHotPosts(pageNumber) {
-      await getHotPosts(pageNumber).then((res) => (this.posts = res.data));
+      await getHotPosts(pageNumber)
+        .then((res) => (this.posts = res.data))
+        .catch((err) => alert(err.response.data));
     },
     onPostDeleted(id) {
       this.removePostFromArray(id);
@@ -141,31 +147,28 @@ export default {
     getUsersSubreddits() {
       getUsersSubreddits()
         .then((res) => (this.usersSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     getModeratedSubreddits() {
       getModeratedSubreddits()
         .then((res) => (this.moderatedSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     onPageChanged(number) {
       this.currentPage = this.currentPage + number;
 
       if (this.newActive)
-        this.getPosts(this.currentPage).then(
-          (res) => (this.pageCount = res.data.page_count)
-        );
-
+        this.getPosts(this.currentPage)
+          .then((res) => (this.pageCount = res.data.page_count))
+          .catch((err) => alert(err.response.data));
       if (this.bestActive)
-        this.getBestPosts(this.currentPage).then(
-          (res) => (this.pageCount = res.data.page_count)
-        );
-
+        this.getBestPosts(this.currentPage)
+          .then((res) => (this.pageCount = res.data.page_count))
+          .catch((err) => alert(err.response.data));
       if (this.hotActive)
-        this.getHotPosts(this.currentPage).then(
-          (res) => (this.pageCount = res.data.page_count)
-        );
-
+        this.getHotPosts(this.currentPage)
+          .then((res) => (this.pageCount = res.data.page_count))
+          .catch((err) => alert(err.response.data));
       getPageCountForAll();
     },
     handleNewClick() {
@@ -192,9 +195,9 @@ export default {
   },
   mounted() {
     this.getPosts(1);
-    getPageCountForAll().then(
-      (res) => (this.pageCount = Number(res.data.page_count))
-    );
+    getPageCountForAll()
+      .then((res) => (this.pageCount = Number(res.data.page_count)))
+      .catch((err) => alert(err.response.data));
     if (checkIfLoggedIn()) {
       this.getUsersSubreddits();
       this.getModeratedSubreddits();

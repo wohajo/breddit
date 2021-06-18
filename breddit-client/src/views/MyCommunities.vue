@@ -122,22 +122,25 @@ export default {
       this.posts = this.posts.filter((post) => post.post_id !== id);
     },
     async getPosts(pageNumber) {
-      await getPostsForUserCommunities(
-        pageNumber,
-        getFromLocalStorage("token")
-      ).then((res) => (this.posts = res.data));
+      await getPostsForUserCommunities(pageNumber, getFromLocalStorage("token"))
+        .then((res) => (this.posts = res.data))
+        .catch((err) => alert(err.response.data));
     },
     async getBestPosts(pageNumber) {
       await getBestPostsForUserCommunities(
         pageNumber,
         getFromLocalStorage("token")
-      ).then((res) => (this.posts = res.data));
+      )
+        .then((res) => (this.posts = res.data))
+        .catch((err) => alert(err.response.data));
     },
     async getHotPosts(pageNumber) {
       await getHotPostsForUserCommunities(
         pageNumber,
         getFromLocalStorage("token")
-      ).then((res) => (this.posts = res.data));
+      )
+        .then((res) => (this.posts = res.data))
+        .catch((err) => alert(err.response.data));
     },
     onPostDeleted(id) {
       this.removePostFromArray(id);
@@ -147,40 +150,37 @@ export default {
     },
     onUsersSubredditListChanged() {
       this.getPosts(1);
-      getPageCountForUserCommunities(getFromLocalStorage("token")).then(
-        (res) => (this.pageCount = Number(res.data.page_count))
-      );
+      getPageCountForUserCommunities(getFromLocalStorage("token"))
+        .then((res) => (this.pageCount = Number(res.data.page_count)))
+        .catch((err) => alert(err.response.data));
       this.getUsersSubreddits();
       this.getModeratedSubreddits();
     },
     getUsersSubreddits() {
       getUsersSubreddits()
         .then((res) => (this.usersSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     getModeratedSubreddits() {
       getModeratedSubreddits()
         .then((res) => (this.moderatedSubreddits = res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data));
     },
     onPageChanged(number) {
       this.currentPage = this.currentPage + number;
 
       if (this.newActive)
-        this.getPosts(this.currentPage).then(
-          (res) => (this.pageCount = Number(res.data.page_count))
-        );
-
+        this.getPosts(this.currentPage)
+          .then((res) => (this.pageCount = Number(res.data.page_count)))
+          .catch((err) => alert(err.response.data));
       if (this.bestActive)
-        this.getBestPosts(this.currentPage).then(
-          (res) => (this.pageCount = Number(res.data.page_count))
-        );
-
+        this.getBestPosts(this.currentPage)
+          .then((res) => (this.pageCount = Number(res.data.page_count)))
+          .catch((err) => alert(err.response.data));
       if (this.hotActive)
-        this.getHotPosts(this.currentPage).then(
-          (res) => (this.pageCount = Number(res.data.page_count))
-        );
-
+        this.getHotPosts(this.currentPage)
+          .then((res) => (this.pageCount = Number(res.data.page_count)))
+          .catch((err) => alert(err.response.data));
       getPageCountForUserCommunities(getFromLocalStorage("token"));
     },
     handleNewClick() {
@@ -208,9 +208,9 @@ export default {
   mounted() {
     if (checkIfLoggedIn()) {
       this.getPosts(1);
-      getPageCountForUserCommunities(getFromLocalStorage("token")).then(
-        (res) => (this.pageCount = Number(res.data.page_count))
-      );
+      getPageCountForUserCommunities(getFromLocalStorage("token"))
+        .then((res) => (this.pageCount = Number(res.data.page_count)))
+        .catch((err) => alert(err.response.data));
       this.getUsersSubreddits();
       this.getModeratedSubreddits();
       this.socket.on("postDeleted", (id) => {
