@@ -26,6 +26,9 @@ io.sockets.on("connection", (socket) => {
   socket.on("addComment", (postId, comment) =>
     io.to(`room${postId}`).emit("commentAdded", comment)
   );
+  socket.on("changeVote", (postId) => {
+    io.emit("votesChanged", postId);
+  });
 });
 
 // server

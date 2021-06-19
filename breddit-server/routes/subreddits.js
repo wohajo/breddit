@@ -65,14 +65,15 @@ router.put(
     const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
     const modObj = await getModBySubNameAndId(req.params.subId, userIdToken);
 
-    if (modObj !== undefined)
-      await updateSubDescription(req.body.description, req.params.subId)
-        .then((result) => res.status(200).json(result))
-        .catch((err) => {
-          console.log(err);
-          res.status(500).json("Something went wrong");
-        });
-    else res.status(401).json("You are not a moderator");
+    if (!req.body.description || req.body.description !== "")
+      if (modObj !== undefined)
+        await updateSubDescription(req.body.description, req.params.subId)
+          .then((result) => res.status(200).json(result))
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json("Something went wrong");
+          });
+      else res.status(401).json("You are not a moderator");
   }
 );
 

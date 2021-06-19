@@ -48,6 +48,15 @@ router.post(
   async (req, res) => {
     let token = req.headers.authorization;
     const userId = getUserIdFromToken(extractTokenFromHeader(token));
+
+    if (
+      !req.body.title ||
+      req.body.title === "" ||
+      !req.body.subreddit_id ||
+      !req.body.subreddit_id === ""
+    )
+      res.status(400).json("Form not complete");
+
     const f = req.file || null;
     const isInSub = await isUserAlreadyInSub(userId, req.body.subreddit_id);
 
@@ -293,6 +302,9 @@ router.delete(
   async (req, res) => {
     let token = req.headers.authorization;
     const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
+
+    if (!req.query.subId) res.status(400).json("Form not complete");
+
     const modObj = await getModBySubNameAndId(req.query.subId, userIdToken);
 
     if (modObj !== undefined)
@@ -312,6 +324,9 @@ router.delete(
   async (req, res) => {
     let token = req.headers.authorization;
     const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
+
+    if (!req.query.subId) res.status(400).json("Form not complete");
+
     const modObj = await getModBySubNameAndId(req.query.subId, userIdToken);
 
     if (modObj !== undefined)

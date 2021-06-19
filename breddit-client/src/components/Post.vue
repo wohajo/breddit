@@ -148,6 +148,9 @@ export default {
   },
   mounted() {
     this.getVotes();
+    this.socket.on("votesChanged", (postId) => {
+      if (this.post.post_id === postId) this.getVotes();
+    });
   },
   computed: {
     formattedDate() {
@@ -202,7 +205,7 @@ export default {
           axiosConfig(getFromLocalStorage("token"))
         )
         .then(() => {
-          this.getVotes();
+          this.socket.emit("changeVote", this.post.post_id);
         })
         .catch((err) => alert(err.response.data));
     },
@@ -214,7 +217,7 @@ export default {
           axiosConfig(getFromLocalStorage("token"))
         )
         .then(() => {
-          this.getVotes();
+          this.socket.emit("changeVote", this.post.post_id);
         })
         .catch((err) => alert(err.response.data));
     },
@@ -225,7 +228,7 @@ export default {
           axiosConfig(getFromLocalStorage("token"))
         )
         .then(() => {
-          this.getVotes();
+          this.socket.emit("changeVote", this.post.post_id);
         })
         .catch((err) => alert(err.response.data));
     },
