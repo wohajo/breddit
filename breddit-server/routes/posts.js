@@ -53,7 +53,8 @@ router.post(
       !req.body.title ||
       req.body.title === "" ||
       !req.body.subreddit_id ||
-      !req.body.subreddit_id === ""
+      !req.body.subreddit_id === "" ||
+      isNaN(req.body.subreddit_id)
     )
       res.status(400).json("Form not complete");
 
@@ -168,79 +169,99 @@ router.get("/pageCount", async (req, res) => {
 router.get("/subreddit/:subId", async (req, res) => {
   let limit = 10;
   let offset = req.query.page - 1 || 0;
-
-  await getPostsFromSubreddit(req.params.subId, limit, offset * 10)
-    .then((result) => res.status(200).json(result))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
+  if (isNaN(req.params.subId))
+    res.status(400).json("Subreddit ID must be a number");
+  else
+    await getPostsFromSubreddit(req.params.subId, limit, offset * 10)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
 });
 
 router.get("/subreddit/:subId/best", async (req, res) => {
   let limit = 10;
   let offset = req.query.page - 1 || 0;
-
-  await getBestPostsFromSubreddit(req.params.subId, limit, offset * 10)
-    .then((result) => res.status(200).json(result))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
+  if (isNaN(req.params.subId))
+    res.status(400).json("Subreddit ID must be a number");
+  else
+    await getBestPostsFromSubreddit(req.params.subId, limit, offset * 10)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
 });
 
 router.get("/subreddit/:subId/pageCount", async (req, res) => {
-  await getPageCountForSubreddit(req.params.subId)
-    .then((result) => res.status(200).json(result))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
+  if (isNaN(req.params.subId))
+    res.status(400).json("Subreddit ID must be a number");
+  else
+    await getPageCountForSubreddit(req.params.subId)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
 });
 
 router.get("/:postId", async (req, res) => {
-  await getPost(req.params.postId)
-    .then((result) => res.status(200).json(result))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
+  if (isNaN(req.params.postId))
+    res.status(400).json("Post ID must be a number");
+  else
+    await getPost(req.params.postId)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
 });
 
 router.get("/:postId/comments", async (req, res) => {
-  await getCommentsForPosts(req.params.postId)
-    .then((result) => res.status(200).json(result))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
+  if (isNaN(req.params.postId))
+    res.status(400).json("Post ID must be a number");
+  else
+    await getCommentsForPosts(req.params.postId)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
 });
 
 router.get("/:postId/votes", async (req, res) => {
-  await getVotesForPost(req.params.postId)
-    .then((result) => res.status(200).json(result))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
+  if (isNaN(req.params.postId))
+    res.status(400).json("Post ID must be a number");
+  else
+    await getVotesForPost(req.params.postId)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
 });
 
 router.post(
   "/:postId/votes/up",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let token = req.headers.authorization;
-    const userId = getUserIdFromToken(extractTokenFromHeader(token));
-    await deleteVoteFromPost(req.params.postId, userId).catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
-    await voteUpForPost(req.params.postId, userId)
-      .then((result) => res.status(200).json(result))
-      .catch((err) => {
+    if (isNaN(req.params.postId))
+      res.status(400).json("Post ID must be a number");
+    else {
+      let token = req.headers.authorization;
+      const userId = getUserIdFromToken(extractTokenFromHeader(token));
+      await deleteVoteFromPost(req.params.postId, userId).catch((err) => {
         console.log(err);
         res.status(500).json("Something went wrong");
       });
+      await voteUpForPost(req.params.postId, userId)
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json("Something went wrong");
+        });
+    }
   }
 );
 
@@ -248,18 +269,22 @@ router.post(
   "/:postId/votes/down",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let token = req.headers.authorization;
-    const userId = getUserIdFromToken(extractTokenFromHeader(token));
-    await deleteVoteFromPost(req.params.postId, userId).catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
-    await voteDownForPost(req.params.postId, userId)
-      .then((result) => res.status(200).json(result))
-      .catch((err) => {
+    if (isNaN(req.params.postId))
+      res.status(400).json("Post ID must be a number");
+    else {
+      let token = req.headers.authorization;
+      const userId = getUserIdFromToken(extractTokenFromHeader(token));
+      await deleteVoteFromPost(req.params.postId, userId).catch((err) => {
         console.log(err);
         res.status(500).json("Something went wrong");
       });
+      await voteDownForPost(req.params.postId, userId)
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json("Something went wrong");
+        });
+    }
   }
 );
 
@@ -267,14 +292,18 @@ router.delete(
   "/:postId/votes",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let token = req.headers.authorization;
-    const userId = getUserIdFromToken(extractTokenFromHeader(token));
-    await deleteVoteFromPost(req.params.postId, userId)
-      .then((result) => res.status(200).json(result))
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json("Something went wrong");
-      });
+    if (isNaN(req.params.postId))
+      res.status(400).json("Post ID must be a number");
+    else {
+      let token = req.headers.authorization;
+      const userId = getUserIdFromToken(extractTokenFromHeader(token));
+      await deleteVoteFromPost(req.params.postId, userId)
+        .then((result) => res.status(200).json(result))
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json("Something went wrong");
+        });
+    }
   }
 );
 
@@ -282,17 +311,21 @@ router.post(
   "/:postId/comments",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let token = req.headers.authorization;
-    const userId = getUserIdFromToken(extractTokenFromHeader(token));
-    if (req.body.content.length === 0)
-      res.status(400).json("Comment cannot be empty");
-    else
-      await postCommentInPost(req.params.postId, userId, req.body.content)
-        .then((result) => res.status(200).json(result))
-        .catch((err) => {
-          console.log(err);
-          res.status(500).json("Something went wrong");
-        });
+    if (isNaN(req.params.postId))
+      res.status(400).json("Post ID must be a number");
+    else {
+      let token = req.headers.authorization;
+      const userId = getUserIdFromToken(extractTokenFromHeader(token));
+      if (!req.body.content || req.body.content.length === 0)
+        res.status(400).json("Comment cannot be empty");
+      else
+        await postCommentInPost(req.params.postId, userId, req.body.content)
+          .then((result) => res.status(200).json(result))
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json("Something went wrong");
+          });
+    }
   }
 );
 
@@ -300,21 +333,25 @@ router.delete(
   "/:postId/comments/:commentId",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let token = req.headers.authorization;
-    const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
+    if (isNaN(req.params.postId) || isNaN(req.params.commentId))
+      res.status(400).json("Post and comment ID must be a number");
+    else {
+      let token = req.headers.authorization;
+      const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
 
-    if (!req.query.subId) res.status(400).json("Form not complete");
+      if (!req.query.subId) res.status(400).json("Form not complete");
 
-    const modObj = await getModBySubNameAndId(req.query.subId, userIdToken);
+      const modObj = await getModBySubNameAndId(req.query.subId, userIdToken);
 
-    if (modObj !== undefined)
-      await removeComment(req.params.postId, req.params.commentId)
-        .then((result) => res.status(200).json(result))
-        .catch((err) => {
-          console.log(err);
-          res.status(500).json("Something went wrong");
-        });
-    else res.status(401).json("You are not a moderator");
+      if (modObj !== undefined)
+        await removeComment(req.params.postId, req.params.commentId)
+          .then((result) => res.status(200).json(result))
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json("Something went wrong");
+          });
+      else res.status(401).json("You are not a moderator");
+    }
   }
 );
 
@@ -322,21 +359,25 @@ router.delete(
   "/:postId",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let token = req.headers.authorization;
-    const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
+    if (isNaN(req.params.postId))
+      res.status(400).json("Post ID must be a number");
+    else {
+      let token = req.headers.authorization;
+      const userIdToken = getUserIdFromToken(extractTokenFromHeader(token));
 
-    if (!req.query.subId) res.status(400).json("Form not complete");
+      if (!req.query.subId) res.status(400).json("Form not complete");
 
-    const modObj = await getModBySubNameAndId(req.query.subId, userIdToken);
+      const modObj = await getModBySubNameAndId(req.query.subId, userIdToken);
 
-    if (modObj !== undefined)
-      await removePost(req.params.postId)
-        .then((result) => res.status(200).json(result))
-        .catch((err) => {
-          console.log(err);
-          res.status(500).json("Something went wrong");
-        });
-    else res.status(401).json("You are not a moderator");
+      if (modObj !== undefined)
+        await removePost(req.params.postId)
+          .then((result) => res.status(200).json(result))
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json("Something went wrong");
+          });
+      else res.status(401).json("You are not a moderator");
+    }
   }
 );
 

@@ -39,12 +39,15 @@ router.post(
 );
 
 router.get("/search/:searchQuery", async (req, res) => {
-  await getUsersWithNicknameLike(req.params.searchQuery)
-    .then((result) => res.status(200).json(result))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json("Something went wrong");
-    });
+  if (req.params.searchQuery === "" || req.params.searchQuery === " ")
+    res.status(400).json("Wrong query");
+  else
+    await getUsersWithNicknameLike(req.params.searchQuery)
+      .then((result) => res.status(200).json(result))
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json("Something went wrong");
+      });
 });
 
 router.get(

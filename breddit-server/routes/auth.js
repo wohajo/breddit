@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const { pool } = require("../db-config");
 const bcrypt = require("bcrypt");
+const EMAIL_REGEX = `\\w*[@]\\w*[.]\\w*`;
 
 router.post("/login", function (req, res, next) {
   passport.authenticate("local", { session: false }, (err, user, info) => {
@@ -46,9 +47,9 @@ router.post("/register", async (req, res) => {
     !req.body.username ||
     !req.body.email ||
     !req.body.password
-  ) {
+  )
     error = "Form not complete";
-  }
+  else if (!req.body.email.match(EMAIL_REGEX)) error = "Invalid email";
 
   if (!error) {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
