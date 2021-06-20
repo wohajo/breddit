@@ -71,7 +71,7 @@
         <BIconChatText /> {{ post.comment_count }}
       </button>
       <button
-        v-if="isModeratorOfThisSub && hasUserJoined"
+        v-if="isModeratorOfThisSub && hasUserJoined && checkIfLoggedIn()"
         type="button"
         class="btn btn-delete btn-danger btn-sm"
         @click="deletePost"
@@ -79,7 +79,7 @@
         <BIconXCircle /> delete
       </button>
     </div>
-    <img v-if="post.image_path !== null" v-bind:src="post.image_path" />
+    <img v-if="post.image_path !== null" v-bind:src="imageLink" />
     <iframe
       v-if="post.video_url !== null"
       id="ytplayer"
@@ -109,7 +109,7 @@ import {
   isInLocalStorage,
 } from "../utlis/storage-utils";
 import axios from "axios";
-import { axiosConfig } from "../utlis/jwt-utils";
+import { axiosConfig, checkIfLoggedIn } from "../utlis/jwt-utils";
 
 export default {
   name: "Post",
@@ -153,6 +153,14 @@ export default {
     });
   },
   computed: {
+    imageLink() {
+      if (
+        this.post.image_path.includes("www") ||
+        this.post.image_path.includes("http")
+      )
+        return this.post.image_path;
+      return `${process.env.VUE_APP_SERVER}/${this.post.image_path}`;
+    },
     formattedDate() {
       return new Date(this.post.creation_date).toLocaleString();
     },
@@ -185,6 +193,9 @@ export default {
     },
   },
   methods: {
+    checkIfLoggedIn() {
+      return checkIfLoggedIn();
+    },
     getVotes() {
       axios
         .get(`${process.env.VUE_APP_SERVER}/posts/${this.post.post_id}/votes`)

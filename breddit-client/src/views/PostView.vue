@@ -14,7 +14,10 @@
               :socket="socket"
               @usersSubredditListChanged="onUsersSubredditListChanged"
             />
-            <form v-if="checkIfLoggedIn()" @submit="handleSendComment">
+            <form
+              v-if="checkIfLoggedIn() && hasUserJoined"
+              @submit="handleSendComment"
+            >
               <div class="mb-3">
                 <textarea
                   class="form-control"
@@ -107,6 +110,14 @@ export default {
   unmounted() {
     this.socket.disconnect();
   },
+  computed: {
+    hasUserJoined() {
+      return (
+        this.usersSubreddits.find(({ id }) => id === this.post.subreddit_id) !==
+        undefined
+      );
+    },
+  },
   methods: {
     onPostDeleted() {
       alert("Post was deleted");
@@ -135,7 +146,7 @@ export default {
           this.commentInput = "";
           this.socket.emit("addComment", this.post.post_id, res.data);
         })
-        .catch((err) => console.log(err.response.data));
+        .catch((err) => alert(err.response.data));
     },
     getModeratedSubreddits() {
       getModeratedSubreddits()

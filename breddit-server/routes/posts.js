@@ -29,7 +29,7 @@ const router = express.Router();
 const passport = require("passport");
 const multer = require("multer");
 const { getModBySubNameAndId } = require("../api/subreddit-api");
-const { isUserAlreadyInSub } = require("../utils/api-utils");
+const { isUserAlreadyInSub, getSubIdOfPost } = require("../utils/api-utils");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -82,7 +82,7 @@ router.post(
       await addPost(
         req.body.title,
         req.body.content,
-        `${process.env.SERVER_HOST}/images/${req.file.filename}`,
+        `images/${req.file.filename}`,
         req.body.video_url,
         new Date().toISOString(),
         req.body.subreddit_id,
@@ -311,20 +311,29 @@ router.post(
   "/:postId/comments",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
+    let token = req.headers.authorization;
+    const userId = getUserIdFromToken(extractTokenFromHeader(token));
+
     if (isNaN(req.params.postId))
       res.status(400).json("Post ID must be a number");
     else {
-      let token = req.headers.authorization;
-      const userId = getUserIdFromToken(extractTokenFromHeader(token));
-      if (!req.body.content || req.body.content.length === 0)
-        res.status(400).json("Comment cannot be empty");
-      else
-        await postCommentInPost(req.params.postId, userId, req.body.content)
-          .then((result) => res.status(200).json(result))
-          .catch((err) => {
-            console.log(err);
-            res.status(500).json("Something went wrong");
-          });
+      const sub = await getSubIdOfPost(req.params.postId);
+      const isInSub = await isUserAlreadyInSub(userId, sub.subreddit_id);
+      if (isInSub === undefined)
+        res.status(400).json("User must be in subreddit");
+      else {
+        let token = req.headers.authorization;
+        const userId = getUserIdFromToken(extractTokenFromHeader(token));
+        if (!req.body.content || req.body.content.length === 0)
+          res.status(400).json("Comment cannot be empty");
+        else
+          await postCommentInPost(req.params.postId, userId, req.body.content)
+            .then((result) => res.status(200).json(result))
+            .catch((err) => {
+              console.log(err);
+              res.status(500).json("Something went wrong");
+            });
+      }
     }
   }
 );
