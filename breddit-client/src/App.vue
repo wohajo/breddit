@@ -1,16 +1,28 @@
 <template>
   <div>
-    <router-view />
+    <router-view :socket="socket" />
   </div>
 </template>
 
 <script>
 import "@popperjs/core";
 import "bootstrap";
+import io from "socket.io-client";
+
 export default {
   name: "App",
   methods: {
     activateModal() {},
+  },
+  data() {
+    return {
+      socket: {},
+    };
+  },
+  created() {
+    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
+      transports: ["websocket"],
+    });
   },
 };
 </script>

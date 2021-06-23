@@ -59,7 +59,6 @@ const {
   getUsersSubreddits,
   getModeratedSubreddits,
 } = require("../api/subredditApi");
-import io from "socket.io-client";
 import { checkIfLoggedIn } from "../utlis/jwt-utils";
 import { getFromLocalStorage } from "../utlis/storage-utils";
 
@@ -77,13 +76,10 @@ export default {
       commentInput: new String(),
       usersSubreddits: [],
       moderatedSubreddits: [],
-      socket: {},
     };
   },
-  created() {
-    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
-      transports: ["websocket"],
-    });
+  props: {
+    socket: Object,
   },
   mounted() {
     getPost(this.$route.params.postId)

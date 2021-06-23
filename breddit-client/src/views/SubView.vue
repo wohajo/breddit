@@ -58,7 +58,6 @@ import Post from "../components/Post.vue";
 import Paginator from "../components/Paginator.vue";
 import SubInfo from "../components/SubInfo.vue";
 import { BIconPlusCircle } from "bootstrap-icons-vue";
-import io from "socket.io-client";
 
 export default {
   components: { Navbar, Post, Paginator, BIconPlusCircle, SubInfo },
@@ -73,13 +72,10 @@ export default {
       isFound: true,
       pageCount: 0,
       currentPage: 1,
-      socket: {},
     };
   },
-  created() {
-    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
-      transports: ["websocket"],
-    });
+  props: {
+    socket: Object,
   },
   mounted() {
     this.getSubreddit(this.$route.params.subredditName);

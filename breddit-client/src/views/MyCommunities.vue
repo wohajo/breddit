@@ -89,7 +89,6 @@ import {
   getBestPostsForUserCommunities,
 } from "../api/postApi";
 import { getFromLocalStorage } from "../utlis/storage-utils";
-import io from "socket.io-client";
 
 export default {
   name: "MyCommunities",
@@ -103,7 +102,6 @@ export default {
       hotActive: false,
       bestActive: false,
       currentPage: 1,
-      socket: {},
     };
   },
   components: {
@@ -112,10 +110,8 @@ export default {
     Navbar,
     Paginator,
   },
-  created() {
-    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
-      transports: ["websocket"],
-    });
+  props: {
+    socket: Object,
   },
   methods: {
     removePostFromArray(id) {

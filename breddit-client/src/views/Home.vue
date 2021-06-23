@@ -82,7 +82,6 @@ import {
   getUsersSubreddits,
 } from "../api/subredditApi";
 import Paginator from "../components/Paginator.vue";
-import io from "socket.io-client";
 import {
   getPageCountForAll,
   getPosts,
@@ -92,6 +91,9 @@ import {
 
 export default {
   name: "Home",
+  props: {
+    socket: Object,
+  },
   data() {
     return {
       posts: [],
@@ -102,7 +104,6 @@ export default {
       hotActive: false,
       bestActive: false,
       currentPage: 1,
-      socket: {},
     };
   },
   components: {
@@ -110,11 +111,6 @@ export default {
     BIconPlusCircle,
     Navbar,
     Paginator,
-  },
-  created() {
-    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
-      transports: ["websocket"],
-    });
   },
   methods: {
     removePostFromArray(id) {

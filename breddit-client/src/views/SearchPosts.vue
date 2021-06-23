@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import io from "socket.io-client";
 import Post from "@/components/Post";
 import Navbar from "@/components/Navbar";
 import { checkIfLoggedIn } from "../utlis/jwt-utils";
@@ -64,7 +63,6 @@ export default {
       posts: [],
       moderatedSubreddits: [],
       usersSubreddits: [],
-      socket: {},
       titleSearch: true,
     };
   },
@@ -72,10 +70,8 @@ export default {
     Post,
     Navbar,
   },
-  created() {
-    this.socket = io(`${process.env.VUE_APP_SERVER}`, {
-      transports: ["websocket"],
-    });
+  props: {
+    socket: Object,
   },
   mounted() {
     this.searchPosts();
